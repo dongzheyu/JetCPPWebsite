@@ -6,13 +6,12 @@
         <div class="row align-items-center">
           <div class="col-lg-8" style="padding-left: 5%;">
             <RouterLink to="/tests" class="back-link mb-4 d-inline-flex align-items-center gap-2">
-              <i class="bi bi-arrow-left"></i> 返回评估列表
+              <i class="bi bi-arrow-left"></i> {{ t('tests.backToList') }}
             </RouterLink>
-            <h1 class="test-hero-title mb-3">抑郁症自评测试</h1>
-            <p class="test-hero-sub mb-2">PHQ-9 患者健康问卷 · 9 道题 · 约 5 分钟</p>
+            <h1 class="test-hero-title mb-3">{{ t('tests.depression.title') }}</h1>
+            <p class="test-hero-sub mb-2">{{ t('tests.depression.subtitle') }}</p>
             <p class="test-hero-desc">
-              PHQ-9（Patient Health Questionnaire-9）是国际上广泛使用的抑郁症筛查工具，
-              已被翻译为多种语言并在临床环境中广泛验证。请根据过去两周内你的真实感受作答。
+              {{ t('tests.depression.description') }}
             </p>
           </div>
         </div>
@@ -24,7 +23,7 @@
       <!-- 测试题目 -->
       <div v-if="!showResult">
         <p class="freq-instruction mb-5" style="padding-left: 5%;">
-          在过去两周内，以下问题出现的频率如何？
+          {{ t('tests.depression.frequencyInstruction') }}
         </p>
 
         <div
@@ -51,14 +50,14 @@
 
         <div class="submit-section mt-4">
           <p v-if="answeredCount < questions.length" class="submit-hint">
-            还有 {{ questions.length - answeredCount }} 道题未作答
+            {{ t('tests.remainingQuestions', { count: questions.length - answeredCount }) }}
           </p>
           <button
             class="btn btn-primary btn-animate btn-lg"
             :disabled="answeredCount < questions.length"
             @click="calculateResult"
           >
-            查看结果
+            {{ t('tests.viewResult') }}
           </button>
         </div>
       </div>
@@ -79,7 +78,7 @@
 
         <!-- 各题得分 -->
         <div class="answer-review mb-5">
-          <h3 class="review-title">各项得分详情</h3>
+          <h3 class="review-title">{{ t('tests.depression.scoreDetails') }}</h3>
           <div class="review-grid">
             <div v-for="(q, index) in questions" :key="q.id" class="review-item">
               <div class="review-q-num">Q{{ index + 1 }}</div>
@@ -94,14 +93,14 @@
 
         <!-- 功能损害评估 -->
         <div class="impairment-section mb-5">
-          <h3 class="review-title">详细分析</h3>
+          <h3 class="review-title">{{ t('tests.depression.detailAnalysis') }}</h3>
           <div class="detail-grid">
             <div class="detail-block">
-              <h4 class="detail-block-title">测试说明</h4>
+              <h4 class="detail-block-title">{{ t('tests.depression.testExplanation') }}</h4>
               <p class="detail-block-text">{{ result.analysis }}</p>
             </div>
             <div class="detail-block">
-              <h4 class="detail-block-title">建议行动</h4>
+              <h4 class="detail-block-title">{{ t('tests.depression.suggestedActions') }}</h4>
               <ul class="detail-list">
                 <li v-for="s in result.suggestions" :key="s">{{ s }}</li>
               </ul>
@@ -111,8 +110,8 @@
 
         <!-- 心理健康资源 -->
         <div class="resources-section mb-5">
-          <h3 class="review-title">心理健康求助资源</h3>
-          <p class="resources-intro">无论测试结果如何，当你感到心理上的困扰时，都可以联系以下专业资源：</p>
+          <h3 class="review-title">{{ t('tests.depression.mentalHealthResources') }}</h3>
+          <p class="resources-intro">{{ t('tests.depression.resourcesIntro') }}</p>
           <div class="resources-grid">
             <div v-for="r in resources" :key="r.name" class="resource-card">
               <div class="resource-name">{{ r.name }}</div>
@@ -126,14 +125,14 @@
         <div class="important-notice mb-5">
           <i class="bi bi-exclamation-triangle notice-icon"></i>
           <div>
-            <strong>重要说明</strong>
-            <p>PHQ-9 是筛查工具，不是诊断工具。测试结果不能替代精神科医生或心理咨询师的专业评估。如果你对自己的心理健康状况感到担忧，请务必寻求专业帮助。如果你有伤害自己的想法，请立即拨打危机热线或前往最近的急诊室。</p>
+            <strong>{{ t('tests.depression.importantNotice') }}</strong>
+            <p>{{ t('tests.depression.noticeText') }}</p>
           </div>
         </div>
 
         <div class="text-center">
-          <button class="btn btn-animate me-3" @click="resetTest">重新测试</button>
-          <RouterLink to="/tests" class="btn btn-primary btn-animate">查看其他测试</RouterLink>
+          <button class="btn btn-animate me-3" @click="resetTest">{{ t('tests.resetTest') }}</button>
+          <RouterLink to="/tests" class="btn btn-primary btn-animate">{{ t('tests.viewOtherTests') }}</RouterLink>
         </div>
       </div>
     </div>
@@ -143,24 +142,27 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const freqOptions = [
-  { value: 0, label: '完全没有' },
-  { value: 1, label: '有几天' },
-  { value: 2, label: '超过一半时间' },
-  { value: 3, label: '几乎每天' },
+  { value: 0, label: t('tests.freqOptions.none') },
+  { value: 1, label: t('tests.freqOptions.severalDays') },
+  { value: 2, label: t('tests.freqOptions.moreThanHalf') },
+  { value: 3, label: t('tests.freqOptions.almostEveryDay') },
 ]
 
 const questions = ref([
-  { id: 1, text: '做事时提不起劲或没有兴趣' },
-  { id: 2, text: '感到心情低落、沮丧或绝望' },
-  { id: 3, text: '入睡困难、睡不安稳或睡眠过多' },
-  { id: 4, text: '感觉疲倦或没有活力' },
-  { id: 5, text: '食欲不振或吃太多' },
-  { id: 6, text: '觉得自己很糟，或觉得自己很失败，或让自己或家人失望' },
-  { id: 7, text: '对事物专注有困难，例如阅读报纸或看电视时' },
-  { id: 8, text: '动作或说话速度缓慢到别人已经察觉，或正好相反，烦躁或坐立不安、动来动去的情况更胜于平常' },
-  { id: 9, text: '有不如死掉或用某种方式伤害自己的念头' },
+  { id: 1, text: t('tests.depression.questions.q1') },
+  { id: 2, text: t('tests.depression.questions.q2') },
+  { id: 3, text: t('tests.depression.questions.q3') },
+  { id: 4, text: t('tests.depression.questions.q4') },
+  { id: 5, text: t('tests.depression.questions.q5') },
+  { id: 6, text: t('tests.depression.questions.q6') },
+  { id: 7, text: t('tests.depression.questions.q7') },
+  { id: 8, text: t('tests.depression.questions.q8') },
+  { id: 9, text: t('tests.depression.questions.q9') },
 ])
 
 const answers = ref<Record<number, number>>({})

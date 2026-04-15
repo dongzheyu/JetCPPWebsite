@@ -1,17 +1,17 @@
-﻿<template>
+<template>
   <div class="phobia-page">
     <section class="test-hero">
       <div class="container-fluid px-4">
         <div class="row align-items-center">
           <div class="col-lg-8" style="padding-left: 5%;">
             <RouterLink to="/tests" class="back-link mb-4 d-inline-flex align-items-center gap-2">
-              <i class="bi bi-arrow-left"></i> 返回评估列表
+              <i class="bi bi-arrow-left"></i> {{ t('tests.backToList') }}
             </RouterLink>
-            <h1 class="test-hero-title mb-3">恐惧症自评测试</h1>
-            <p class="test-hero-sub mb-2">社交恐惧量表（SPIN）+ 特定恐惧症 · 22 道题 · 约 7 分钟</p>
+            <h1 class="test-hero-title mb-3">{{ t('tests.phobia.title') }}</h1>
+            <p class="test-hero-sub mb-2">{{ t('tests.phobia.subtitle') }}</p>
             <p class="test-hero-desc">
-              本测试结合社交恐惧量表（Social Phobia Inventory）和特定恐惧症筛查，用于评估社交恐惧、广场恐惧及多种特定恐惧症状。
-              请根据过去一周的情况，评估每种恐惧对你的困扰程度。
+              {{ t('tests.phobia.description') }}
+              {{ t('tests.phobia.instruction') }}
             </p>
           </div>
         </div>
@@ -20,7 +20,7 @@
 
     <div class="container-fluid px-4 test-body">
       <div v-if="!showResult">
-        <p class="freq-instruction mb-5" style="padding-left: 5%;">以下描述了各种恐惧情境，请评估在过去一周内，这种恐惧对你的困扰程度：</p>
+        <p class="freq-instruction mb-5" style="padding-left: 5%;">{{ t('tests.phobia.questionInstruction') }}</p>
         <div
           v-for="(q, index) in questions"
           :key="q.id"
@@ -43,8 +43,8 @@
           </div>
         </div>
         <div class="submit-section mt-4">
-          <p v-if="answeredCount < questions.length" class="submit-hint">还有 {{ questions.length - answeredCount }} 道题未作答</p>
-          <button class="btn btn-primary btn-animate btn-lg" :disabled="answeredCount < questions.length" @click="calculateResult">查看结果</button>
+          <p v-if="answeredCount < questions.length" class="submit-hint">{{ t('tests.remainingQuestions', { count: questions.length - answeredCount }) }}</p>
+          <button class="btn btn-primary btn-animate btn-lg" :disabled="answeredCount < questions.length" @click="calculateResult">{{ t('tests.viewResult') }}</button>
         </div>
       </div>
 
@@ -61,7 +61,7 @@
         </div>
 
         <div class="answer-review mb-5">
-          <h3 class="review-title">各项得分详情</h3>
+          <h3 class="review-title">{{ t('tests.phobia.scoreDetails') }}</h3>
           <div class="review-grid">
             <div v-for="(q, index) in questions" :key="q.id" class="review-item">
               <div class="review-q-num">Q{{ index + 1 }}</div>
@@ -75,44 +75,44 @@
         </div>
 
         <div class="dimension-section mb-5">
-          <h3 class="review-title">维度分析</h3>
+          <h3 class="review-title">{{ t('tests.dimension') }}</h3>
           <div class="dimension-grid">
             <div class="dim-card">
               <div class="dim-icon"><i class="bi bi-people-fill"></i></div>
               <div class="dim-content">
-                <h4 class="dim-title">社交恐惧</h4>
+                <h4 class="dim-title">{{ t('tests.phobia.socialPhobia') }}</h4>
                 <p class="dim-score">{{ socialScore }} / 32</p>
-                <p class="dim-desc">害怕被他人观察、评价或羞辱</p>
+                <p class="dim-desc">{{ t('tests.phobia.socialPhobiaDesc') }}</p>
               </div>
             </div>
             <div class="dim-card">
               <div class="dim-icon"><i class="bi bi-geo-alt-fill"></i></div>
               <div class="dim-content">
-                <h4 class="dim-title">广场恐惧</h4>
+                <h4 class="dim-title">{{ t('tests.phobia.agoraphobia') }}</h4>
                 <p class="dim-score">{{ agoraphobiaScore }} / 12</p>
-                <p class="dim-desc">害怕无法逃离或获得帮助的环境</p>
+                <p class="dim-desc">{{ t('tests.phobia.agoraphobiaDesc') }}</p>
               </div>
             </div>
             <div class="dim-card">
               <div class="dim-icon"><i class="bi bi-bug-fill"></i></div>
               <div class="dim-content">
-                <h4 class="dim-title">特定恐惧</h4>
+                <h4 class="dim-title">{{ t('tests.phobia.specificPhobia') }}</h4>
                 <p class="dim-score">{{ specificScore }} / 28</p>
-                <p class="dim-desc">对特定物体或情境的过度恐惧</p>
+                <p class="dim-desc">{{ t('tests.phobia.specificPhobiaDesc') }}</p>
               </div>
             </div>
           </div>
         </div>
 
         <div class="impairment-section mb-5">
-          <h3 class="review-title">详细分析</h3>
+          <h3 class="review-title">{{ t('tests.phobia.detailAnalysis') }}</h3>
           <div class="detail-grid">
             <div class="detail-block">
-              <h4 class="detail-block-title">测试说明</h4>
+              <h4 class="detail-block-title">{{ t('tests.phobia.testExplanation') }}</h4>
               <p class="detail-block-text">{{ result.analysis }}</p>
             </div>
             <div class="detail-block">
-              <h4 class="detail-block-title">建议行动</h4>
+              <h4 class="detail-block-title">{{ t('tests.phobia.suggestedActions') }}</h4>
               <ul class="detail-list">
                 <li v-for="s in result.suggestions" :key="s">{{ s }}</li>
               </ul>
@@ -123,14 +123,14 @@
         <div class="important-notice mb-5">
           <i class="bi bi-exclamation-triangle notice-icon"></i>
           <div>
-            <strong>重要说明</strong>
-            <p>恐惧症测试是筛查工具，不能替代专业诊断。恐惧症通常可以通过暴露疗法、认知行为疗法等有效治疗。如果你的恐惧已经严重影响日常生活，建议寻求专业帮助。</p>
+            <strong>{{ t('tests.phobia.importantNotice') }}</strong>
+            <p>{{ t('tests.phobia.noticeText') }}</p>
           </div>
         </div>
 
         <div class="text-center" style="text-align: left !important;">
-          <button class="btn btn-animate me-3" @click="resetTest">重新测试</button>
-          <RouterLink to="/tests" class="btn btn-primary btn-animate">查看其他测试</RouterLink>
+          <button class="btn btn-animate me-3" @click="resetTest">{{ t('tests.resetTest') }}</button>
+          <RouterLink to="/tests" class="btn btn-primary btn-animate">{{ t('tests.viewOtherTests') }}</RouterLink>
         </div>
       </div>
     </div>
@@ -140,6 +140,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const freqOptions = [
   { value: 0, label: '一点也不' },

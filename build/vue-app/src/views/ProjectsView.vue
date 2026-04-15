@@ -6,10 +6,10 @@
         <div class="row align-items-center">
           <div class="col-lg-8" style="padding-left: 5%;">
             <h1 class="projects-title mb-4 animate-slide-up" :class="{ 'visible': isVisible }">
-              项目展示
+              {{ t('projects.title') }}
             </h1>
             <p class="projects-desc mb-4 animate-slide-up" :class="{ 'visible': isVisible }" style="animation-delay: 0.15s">
-              探索我的开源项目，涵盖工具开发、游戏辅助、教育软件等多个领域
+              {{ t('projects.description') }}
             </p>
           </div>
           <div class="col-lg-4">
@@ -41,7 +41,7 @@
                   </span>
                   <a :href="project.link" class="btn btn-animate btn-sm" target="_blank"
                      :style="`border: 1.5px solid ${project.color}40; color: ${project.color}`">
-                    查看详情 <i class="bi bi-arrow-right ms-1"></i>
+                    {{ t('projects.viewDetails') }} <i class="bi bi-arrow-right ms-1"></i>
                   </a>
                 </div>
               </div>
@@ -54,26 +54,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useAnimations } from '@/composables/useAnimations'
+import { useI18n } from 'vue-i18n'
 
+const { t, locale } = useI18n()
 const { isVisible } = useAnimations()
 
-const projects = ref([
+const projects = computed(() => [
   {
     "id": 5,
     "title": "English Listen WinUI",
-    "description": "现代化英语听写训练工具，基于WinUI 3 + C# + C++混合开发，MVVM架构，Mica材质，百度翻译集成",
-    "category": "教育",
-    "link": "/project/english-listen-winui.html",
+    "description": t('projects.categories.education') + " - Modern English dictation training tool based on WinUI 3 + C# + C++ hybrid development",
+    "category": t('projects.categories.education'),
+    "link": locale.value === 'en-US' ? "/project/en/english-listen-winui.html" : "/project/english-listen-winui.html",
     "color": "#f48c06"
   },
   {
     "id": 4,
     "title": "English-Listen",
-    "description": "专业英语听写训练工具，基于C++和Qt6开发的现代化听写软件",
-    "category": "教育",
-    "link": "/project/english-listen.html",
+    "description": t('projects.categories.education') + " - Professional English dictation training tool based on C++ and Qt6",
+    "category": t('projects.categories.education'),
+    "link": locale.value === 'en-US' ? "/project/en/english-listen.html" : "/project/english-listen.html",
     "color": "#52b788"
   }
 ])

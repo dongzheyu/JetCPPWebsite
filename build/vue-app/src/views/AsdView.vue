@@ -1,17 +1,17 @@
-﻿<template>
+<template>
   <div class="asd-page">
     <section class="test-hero">
       <div class="container-fluid px-4">
         <div class="row align-items-center">
           <div class="col-lg-8" style="padding-left: 5%;">
             <RouterLink to="/tests" class="back-link mb-4 d-inline-flex align-items-center gap-2">
-              <i class="bi bi-arrow-left"></i> 返回评估列表
+              <i class="bi bi-arrow-left"></i> {{ t('tests.backToList') }}
             </RouterLink>
-            <h1 class="test-hero-title mb-3">自闭症谱系障碍初筛测试</h1>
-            <p class="test-hero-sub mb-2">自闭症谱系商数（AQ-10） · 10 道题 · 约 3 分钟</p>
+            <h1 class="test-hero-title mb-3">{{ t('tests.asd.title') }}</h1>
+            <p class="test-hero-sub mb-2">{{ t('tests.asd.subtitle') }}</p>
             <p class="test-hero-desc">
-              自闭症谱系商数（Autism Spectrum Quotient-10）是简短的自闭症谱系特征筛查工具，用于评估可能提示自闭症谱系障碍的行为模式。
-              <strong>请注意：此测试仅适用于成人初筛，不能替代专业诊断。</strong>
+              {{ t('tests.asd.description') }}
+              <strong>{{ t('tests.asd.disclaimer') }}</strong>
             </p>
           </div>
         </div>
@@ -20,7 +20,7 @@
 
     <div class="container-fluid px-4 test-body">
       <div v-if="!showResult">
-        <p class="freq-instruction mb-5" style="padding-left: 5%;">请评估以下陈述与你的实际情况的符合程度：</p>
+        <p class="freq-instruction mb-5" style="padding-left: 5%;">{{ t('tests.asd.instruction') }}</p>
         <div
           v-for="(q, index) in questions"
           :key="q.id"
@@ -43,8 +43,8 @@
           </div>
         </div>
         <div class="submit-section mt-4">
-          <p v-if="answeredCount < questions.length" class="submit-hint">还有 {{ questions.length - answeredCount }} 道题未作答</p>
-          <button class="btn btn-primary btn-animate btn-lg" :disabled="answeredCount < questions.length" @click="calculateResult">查看结果</button>
+          <p v-if="answeredCount < questions.length" class="submit-hint">{{ t('tests.remainingQuestions', { count: questions.length - answeredCount }) }}</p>
+          <button class="btn btn-primary btn-animate btn-lg" :disabled="answeredCount < questions.length" @click="calculateResult">{{ t('tests.viewResult') }}</button>
         </div>
       </div>
 
@@ -61,14 +61,14 @@
         </div>
 
         <div class="impairment-section mb-5">
-          <h3 class="review-title">详细分析</h3>
+          <h3 class="review-title">{{ t('tests.asd.detailAnalysis') }}</h3>
           <div class="detail-grid">
             <div class="detail-block">
-              <h4 class="detail-block-title">测试说明</h4>
+              <h4 class="detail-block-title">{{ t('tests.asd.testExplanation') }}</h4>
               <p class="detail-block-text">{{ result.analysis }}</p>
             </div>
             <div class="detail-block">
-              <h4 class="detail-block-title">建议行动</h4>
+              <h4 class="detail-block-title">{{ t('tests.asd.suggestedActions') }}</h4>
               <ul class="detail-list">
                 <li v-for="s in result.suggestions" :key="s">{{ s }}</li>
               </ul>
@@ -79,15 +79,15 @@
         <div class="important-notice mb-5">
           <i class="bi bi-exclamation-triangle notice-icon"></i>
           <div>
-            <strong>重要免责声明</strong>
-            <p>AQ-10 是极简化的初筛工具，不能替代专业的自闭症谱系障碍诊断。自闭症谱系障碍的诊断需要由专业医生通过详细的发育史访谈、行为观察和标准化评估才能确定。此测试结果仅供参考，不能作为诊断依据。</p>
-            <p>自闭症谱系障碍是一种神经多样性，不是疾病。许多自闭症谱系人士拥有独特的能力和优势。如果你怀疑自己可能有自闭症特征，建议寻求专业的神经发育评估。</p>
+            <strong>{{ t('tests.asd.importantDisclaimer') }}</strong>
+            <p>{{ t('tests.asd.disclaimerText1') }}</p>
+            <p>{{ t('tests.asd.disclaimerText2') }}</p>
           </div>
         </div>
 
         <div class="text-center" style="text-align: left !important;">
-          <button class="btn btn-animate me-3" @click="resetTest">重新测试</button>
-          <RouterLink to="/tests" class="btn btn-primary btn-animate">查看其他测试</RouterLink>
+          <button class="btn btn-animate me-3" @click="resetTest">{{ t('tests.resetTest') }}</button>
+          <RouterLink to="/tests" class="btn btn-primary btn-animate">{{ t('tests.viewOtherTests') }}</RouterLink>
         </div>
       </div>
     </div>
@@ -97,6 +97,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const freqOptions = [
   { value: 0, label: '完全不符合' },

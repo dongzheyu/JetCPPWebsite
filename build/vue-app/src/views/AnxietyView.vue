@@ -5,14 +5,12 @@
         <div class="row align-items-center">
           <div class="col-lg-8">
             <RouterLink to="/tests" class="back-link mb-4 d-inline-flex align-items-center gap-2">
-              <i class="bi bi-arrow-left"></i> 返回评估列表
+              <i class="bi bi-arrow-left"></i> {{ t('tests.backToList') }}
             </RouterLink>
-            <h1 class="test-hero-title mb-3">焦虑症自评测试</h1>
-            <p class="test-hero-sub mb-2">GAD-7 广泛性焦虑量表 · 7 道题 · 约 3 分钟</p>
+            <h1 class="test-hero-title mb-3">{{ t('tests.anxiety.title') }}</h1>
+            <p class="test-hero-sub mb-2">{{ t('tests.anxiety.subtitle') }}</p>
             <p class="test-hero-desc">
-              GAD-7（Generalized Anxiety Disorder-7）是目前最广泛使用的焦虑筛查工具，
-              由 Spitzer 等人于 2006 年开发，已在全球数十项临床研究中验证其信效度。
-              请根据过去两周内你的真实感受作答。
+              {{ t('tests.anxiety.description') }}
             </p>
           </div>
         </div>
@@ -21,7 +19,7 @@
 
     <div class="container-fluid px-4 test-body">
       <div v-if="!showResult">
-        <p class="freq-instruction mb-5">在过去两周内，以下问题出现的频率如何？</p>
+        <p class="freq-instruction mb-5">{{ t('tests.anxiety.frequencyInstruction') }}</p>
         <div
           v-for="(q, index) in questions"
           :key="q.id"
@@ -44,8 +42,8 @@
           </div>
         </div>
         <div class="submit-section mt-4">
-          <p v-if="answeredCount < questions.length" class="submit-hint">还有 {{ questions.length - answeredCount }} 道题未作答</p>
-          <button class="btn btn-primary btn-animate btn-lg" :disabled="answeredCount < questions.length" @click="calculateResult">查看结果</button>
+          <p v-if="answeredCount < questions.length" class="submit-hint">{{ t('tests.remainingQuestions', { count: questions.length - answeredCount }) }}</p>
+          <button class="btn btn-primary btn-animate btn-lg" :disabled="answeredCount < questions.length" @click="calculateResult">{{ t('tests.viewResult') }}</button>
         </div>
       </div>
 
@@ -62,7 +60,7 @@
         </div>
 
         <div class="answer-review mb-5">
-          <h3 class="review-title">各项得分详情</h3>
+          <h3 class="review-title">{{ t('tests.anxiety.scoreDetails') }}</h3>
           <div class="review-grid">
             <div v-for="(q, index) in questions" :key="q.id" class="review-item">
               <div class="review-q-num">Q{{ index + 1 }}</div>
@@ -76,14 +74,14 @@
         </div>
 
         <div class="impairment-section mb-5">
-          <h3 class="review-title">详细分析</h3>
+          <h3 class="review-title">{{ t('tests.anxiety.detailAnalysis') }}</h3>
           <div class="detail-grid">
             <div class="detail-block">
-              <h4 class="detail-block-title">测试说明</h4>
+              <h4 class="detail-block-title">{{ t('tests.anxiety.testExplanation') }}</h4>
               <p class="detail-block-text">{{ result.analysis }}</p>
             </div>
             <div class="detail-block">
-              <h4 class="detail-block-title">建议行动</h4>
+              <h4 class="detail-block-title">{{ t('tests.anxiety.suggestedActions') }}</h4>
               <ul class="detail-list">
                 <li v-for="s in result.suggestions" :key="s">{{ s }}</li>
               </ul>
@@ -94,14 +92,14 @@
         <div class="important-notice mb-5">
           <i class="bi bi-exclamation-triangle notice-icon"></i>
           <div>
-            <strong>重要说明</strong>
-            <p>GAD-7 是筛查工具，不是诊断工具。测试结果不能替代精神科医生或心理咨询师的专业评估。如果你对自己的心理健康状况感到担忧，请务必寻求专业帮助。</p>
+            <strong>{{ t('tests.anxiety.importantNotice') }}</strong>
+            <p>{{ t('tests.anxiety.noticeText') }}</p>
           </div>
         </div>
 
         <div class="text-center" style="text-align: left !important;">
-          <button class="btn btn-animate me-3" @click="resetTest">重新测试</button>
-          <RouterLink to="/tests" class="btn btn-primary btn-animate">查看其他测试</RouterLink>
+          <button class="btn btn-animate me-3" @click="resetTest">{{ t('tests.resetTest') }}</button>
+          <RouterLink to="/tests" class="btn btn-primary btn-animate">{{ t('tests.viewOtherTests') }}</RouterLink>
         </div>
       </div>
     </div>
@@ -111,22 +109,25 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const freqOptions = [
-  { value: 0, label: '完全没有' },
-  { value: 1, label: '有几天' },
-  { value: 2, label: '超过一半时间' },
-  { value: 3, label: '几乎每天' },
+  { value: 0, label: t('tests.freqOptions.none') },
+  { value: 1, label: t('tests.freqOptions.severalDays') },
+  { value: 2, label: t('tests.freqOptions.moreThanHalf') },
+  { value: 3, label: t('tests.freqOptions.almostEveryDay') },
 ]
 
 const questions = ref([
-  { id: 1, text: '感到紧张、焦虑或烦躁不安' },
-  { id: 2, text: '无法停止或无法控制担忧' },
-  { id: 3, text: '对各种各样的事情担忧过多' },
-  { id: 4, text: '难以放松' },
-  { id: 5, text: '坐立不安，难以保持安静' },
-  { id: 6, text: '容易感到心烦或容易被激怒' },
-  { id: 7, text: '感到好像有什么可怕的事情可能会发生' },
+  { id: 1, text: t('tests.anxiety.questions.q1') },
+  { id: 2, text: t('tests.anxiety.questions.q2') },
+  { id: 3, text: t('tests.anxiety.questions.q3') },
+  { id: 4, text: t('tests.anxiety.questions.q4') },
+  { id: 5, text: t('tests.anxiety.questions.q5') },
+  { id: 6, text: t('tests.anxiety.questions.q6') },
+  { id: 7, text: t('tests.anxiety.questions.q7') },
 ])
 
 const answers = ref<Record<number, number>>({})

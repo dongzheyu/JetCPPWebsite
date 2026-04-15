@@ -6,13 +6,12 @@
         <div class="row align-items-center">
           <div class="col-lg-8" style="padding-left: 5%;">
             <RouterLink to="/tests" class="back-link mb-4 d-inline-flex align-items-center gap-2">
-              <i class="bi bi-arrow-left"></i> 返回评估列表
+              <i class="bi bi-arrow-left"></i> {{ t('tests.backToList') }}
             </RouterLink>
-            <h1 class="test-hero-title mb-3">MBTI 人格测试</h1>
-            <p class="test-hero-sub mb-2">迈尔斯-布里格斯类型指标 · 93 道题 · 约 15 分钟</p>
+            <h1 class="test-hero-title mb-3">{{ t('tests.mbti.title') }}</h1>
+            <p class="test-hero-sub mb-2">{{ t('tests.mbti.subtitle') }}</p>
             <p class="test-hero-desc">
-              测试你在四个维度上的偏好：能量方向（E/I）、感知方式（S/N）、决策方式（T/F）、生活方式（J/P），
-              从而识别 16 种人格类型中的你。请根据第一直觉作答，没有对错之分。
+              {{ t('tests.mbti.description') }}
             </p>
           </div>
         </div>
@@ -24,7 +23,7 @@
       <!-- 进度条 -->
       <div v-if="!showResult" class="progress-section mb-5" style="padding-left: 5%;">
         <div class="d-flex justify-content-between align-items-center mb-2">
-          <span class="progress-label">进度</span>
+          <span class="progress-label">{{ t('tests.progress') }}</span>
           <span class="progress-count">{{ answeredCount }} / {{ questions.length }}</span>
         </div>
         <div class="progress-bar-wrap">
@@ -53,19 +52,19 @@
               {{ opt.label }}
             </button>
           </div>
-          <div class="dimension-hint">维度：{{ dimensionLabel(q.dimension) }}</div>
+          <div class="dimension-hint">{{ t('tests.dimension') }}：{{ dimensionLabel(q.dimension) }}</div>
         </div>
 
         <div class="submit-section">
           <p v-if="answeredCount < questions.length" class="submit-hint">
-            还有 {{ questions.length - answeredCount }} 道题未作答
+            {{ t('tests.remainingQuestions', { count: questions.length - answeredCount }) }}
           </p>
           <button
             class="btn btn-primary btn-animate btn-lg"
             :disabled="answeredCount < questions.length"
             @click="calculateResult"
           >
-            查看结果
+            {{ t('tests.viewResult') }}
           </button>
         </div>
       </div>
@@ -98,47 +97,47 @@
         <!-- 详细分析 -->
         <div class="result-detail-grid">
           <div class="result-block">
-            <h3 class="result-block-title">核心特征</h3>
+            <h3 class="result-block-title">{{ t('tests.result.coreFeatures') }}</h3>
             <p class="result-block-text">{{ result.overview }}</p>
           </div>
 
           <div class="result-block">
-            <h3 class="result-block-title">优势</h3>
+            <h3 class="result-block-title">{{ t('tests.result.strengths') }}</h3>
             <ul class="result-list">
               <li v-for="s in result.strengths" :key="s">{{ s }}</li>
             </ul>
           </div>
 
           <div class="result-block">
-            <h3 class="result-block-title">潜在弱点</h3>
+            <h3 class="result-block-title">{{ t('tests.result.weaknesses') }}</h3>
             <ul class="result-list">
               <li v-for="w in result.weaknesses" :key="w">{{ w }}</li>
             </ul>
           </div>
 
           <div class="result-block">
-            <h3 class="result-block-title">人际关系</h3>
+            <h3 class="result-block-title">{{ t('tests.result.relationships') }}</h3>
             <p class="result-block-text">{{ result.relationships }}</p>
           </div>
 
           <div class="result-block">
-            <h3 class="result-block-title">职业倾向</h3>
+            <h3 class="result-block-title">{{ t('tests.result.career') }}</h3>
             <p class="result-block-text">{{ result.career }}</p>
           </div>
 
           <div class="result-block">
-            <h3 class="result-block-title">成长建议</h3>
+            <h3 class="result-block-title">{{ t('tests.result.growth') }}</h3>
             <p class="result-block-text">{{ result.growth }}</p>
           </div>
         </div>
 
         <div class="result-disclaimer mt-5">
-          MBTI 是一种人格理论工具，结果反映倾向而非绝对定性。每个人都是复杂而独特的，不应以类型标签来限定自我或他人。
+          {{ t('tests.result.disclaimer') }}
         </div>
 
         <div class="text-center mt-5">
-          <button class="btn btn-animate me-3" @click="resetTest">重新测试</button>
-          <RouterLink to="/tests" class="btn btn-primary btn-animate">查看其他测试</RouterLink>
+          <button class="btn btn-animate me-3" @click="resetTest">{{ t('tests.resetTest') }}</button>
+          <RouterLink to="/tests" class="btn btn-primary btn-animate">{{ t('tests.viewOtherTests') }}</RouterLink>
         </div>
       </div>
     </div>
@@ -148,110 +147,113 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 // ---- 题目数据 ----
 // dimension: EI | SN | TF | JP
 const questions = ref([
   // E/I 维度 (24题)
-  { id: 1,  dimension: 'EI', text: '在社交聚会结束后，你通常感到？', options: [{ label: '精力充沛，意犹未尽', value: 'E' }, { label: '精疲力竭，需要独处恢复', value: 'I' }] },
-  { id: 2,  dimension: 'EI', text: '你更享受？', options: [{ label: '与很多人交谈，广交朋友', value: 'E' }, { label: '与少数亲近的人深入交流', value: 'I' }] },
-  { id: 3,  dimension: 'EI', text: '在新环境中，你倾向于？', options: [{ label: '主动出击，迅速结识他人', value: 'E' }, { label: '先观察，等时机再融入', value: 'I' }] },
-  { id: 4,  dimension: 'EI', text: '你更倾向于？', options: [{ label: '边说边思考，通过交流整理想法', value: 'E' }, { label: '先思考好再开口表达', value: 'I' }] },
-  { id: 5,  dimension: 'EI', text: '独处一整天让你感到？', options: [{ label: '坐立不安，想出去见人', value: 'E' }, { label: '放松舒适，享受宁静', value: 'I' }] },
-  { id: 6,  dimension: 'EI', text: '你通常被描述为？', options: [{ label: '外向开朗、善于表达', value: 'E' }, { label: '内敛沉稳、善于倾听', value: 'I' }] },
-  { id: 7,  dimension: 'EI', text: '当你遇到问题时？', options: [{ label: '喜欢和别人讨论来获得思路', value: 'E' }, { label: '喜欢自己静静思考解决', value: 'I' }] },
-  { id: 8,  dimension: 'EI', text: '你在工作或学习中更倾向于？', options: [{ label: '开放办公或小组合作环境', value: 'E' }, { label: '安静私密的独立空间', value: 'I' }] },
-  { id: 9,  dimension: 'EI', text: '如果一周没有任何社交活动，你会？', options: [{ label: '感到无聊和孤独，主动约人', value: 'E' }, { label: '享受这段独处时光', value: 'I' }] },
-  { id: 10, dimension: 'EI', text: '你更喜欢哪种课堂/会议形式？', options: [{ label: '讨论式，鼓励发言', value: 'E' }, { label: '讲授式，先听后思考', value: 'I' }] },
-  { id: 11, dimension: 'EI', text: '你的朋友圈通常是？', options: [{ label: '较广，各行各业都有认识的人', value: 'E' }, { label: '较小，但关系很深', value: 'I' }] },
-  { id: 12, dimension: 'EI', text: '面对陌生人时？', options: [{ label: '你常常主动打招呼', value: 'E' }, { label: '你等对方先开口', value: 'I' }] },
-  { id: 13, dimension: 'EI', text: '你认为自己的能量主要来自？', options: [{ label: '与他人的互动和交流', value: 'E' }, { label: '独处和内省', value: 'I' }] },
-  { id: 14, dimension: 'EI', text: '在团队项目中，你更想担任？', options: [{ label: '协调者，对外沟通', value: 'E' }, { label: '执行者，专注自己那部分', value: 'I' }] },
-  { id: 15, dimension: 'EI', text: '你通常在哪种情况下更有创意？', options: [{ label: '和别人头脑风暴时', value: 'E' }, { label: '一个人安静思考时', value: 'I' }] },
-  { id: 16, dimension: 'EI', text: '你更喜欢表达情绪的方式是？', options: [{ label: '直接说出来，当面倾诉', value: 'E' }, { label: '写下来，或者留给自己消化', value: 'I' }] },
-  { id: 17, dimension: 'EI', text: '当你心情不好时，更倾向于？', options: [{ label: '找朋友倾诉或出去散心', value: 'E' }, { label: '独处，给自己空间缓解', value: 'I' }] },
-  { id: 18, dimension: 'EI', text: '你在演讲/上台展示时？', options: [{ label: '感到兴奋，这是展示自我的机会', value: 'E' }, { label: '感到紧张，宁愿台下观看', value: 'I' }] },
-  { id: 19, dimension: 'EI', text: '放假时你更倾向于？', options: [{ label: '约朋友出去玩，参加活动', value: 'E' }, { label: '宅在家里，做自己喜欢的事', value: 'I' }] },
-  { id: 20, dimension: 'EI', text: '别人对你的第一印象通常是？', options: [{ label: '健谈、开朗、热情', value: 'E' }, { label: '安静、神秘、深沉', value: 'I' }] },
-  { id: 21, dimension: 'EI', text: '在拥挤热闹的场所，你感到？', options: [{ label: '活力满满，兴奋投入', value: 'E' }, { label: '有些消耗，渴望安静', value: 'I' }] },
-  { id: 22, dimension: 'EI', text: '做决定时，你更在意？', options: [{ label: '他人的反馈和意见', value: 'E' }, { label: '自己内心的判断', value: 'I' }] },
-  { id: 23, dimension: 'EI', text: '你觉得自己更像？', options: [{ label: '外向的社交达人', value: 'E' }, { label: '内敛的独思者', value: 'I' }] },
-  { id: 24, dimension: 'EI', text: '休闲放松对你来说意味着？', options: [{ label: '和人一起做有趣的事', value: 'E' }, { label: '一个人读书、看片、玩游戏', value: 'I' }] },
+  { id: 1,  dimension: 'EI', text: t('tests.mbti.questions.q1'), options: [{ label: t('tests.mbti.options.e1'), value: 'E' }, { label: t('tests.mbti.options.i1'), value: 'I' }] },
+  { id: 2,  dimension: 'EI', text: t('tests.mbti.questions.q2'), options: [{ label: t('tests.mbti.options.e2'), value: 'E' }, { label: t('tests.mbti.options.i2'), value: 'I' }] },
+  { id: 3,  dimension: 'EI', text: t('tests.mbti.questions.q3'), options: [{ label: t('tests.mbti.options.e3'), value: 'E' }, { label: t('tests.mbti.options.i3'), value: 'I' }] },
+  { id: 4,  dimension: 'EI', text: t('tests.mbti.questions.q4'), options: [{ label: t('tests.mbti.options.e4'), value: 'E' }, { label: t('tests.mbti.options.i4'), value: 'I' }] },
+  { id: 5,  dimension: 'EI', text: t('tests.mbti.questions.q5'), options: [{ label: t('tests.mbti.options.e5'), value: 'E' }, { label: t('tests.mbti.options.i5'), value: 'I' }] },
+  { id: 6,  dimension: 'EI', text: t('tests.mbti.questions.q6'), options: [{ label: t('tests.mbti.options.e6'), value: 'E' }, { label: t('tests.mbti.options.i6'), value: 'I' }] },
+  { id: 7,  dimension: 'EI', text: t('tests.mbti.questions.q7'), options: [{ label: t('tests.mbti.options.e7'), value: 'E' }, { label: t('tests.mbti.options.i7'), value: 'I' }] },
+  { id: 8,  dimension: 'EI', text: t('tests.mbti.questions.q8'), options: [{ label: t('tests.mbti.options.e8'), value: 'E' }, { label: t('tests.mbti.options.i8'), value: 'I' }] },
+  { id: 9,  dimension: 'EI', text: t('tests.mbti.questions.q9'), options: [{ label: t('tests.mbti.options.e9'), value: 'E' }, { label: t('tests.mbti.options.i9'), value: 'I' }] },
+  { id: 10, dimension: 'EI', text: t('tests.mbti.questions.q10'), options: [{ label: t('tests.mbti.options.e10'), value: 'E' }, { label: t('tests.mbti.options.i10'), value: 'I' }] },
+  { id: 11, dimension: 'EI', text: t('tests.mbti.questions.q11'), options: [{ label: t('tests.mbti.options.e11'), value: 'E' }, { label: t('tests.mbti.options.i11'), value: 'I' }] },
+  { id: 12, dimension: 'EI', text: t('tests.mbti.questions.q12'), options: [{ label: t('tests.mbti.options.e12'), value: 'E' }, { label: t('tests.mbti.options.i12'), value: 'I' }] },
+  { id: 13, dimension: 'EI', text: t('tests.mbti.questions.q13'), options: [{ label: t('tests.mbti.options.e13'), value: 'E' }, { label: t('tests.mbti.options.i13'), value: 'I' }] },
+  { id: 14, dimension: 'EI', text: t('tests.mbti.questions.q14'), options: [{ label: t('tests.mbti.options.e14'), value: 'E' }, { label: t('tests.mbti.options.i14'), value: 'I' }] },
+  { id: 15, dimension: 'EI', text: t('tests.mbti.questions.q15'), options: [{ label: t('tests.mbti.options.e15'), value: 'E' }, { label: t('tests.mbti.options.i15'), value: 'I' }] },
+  { id: 16, dimension: 'EI', text: t('tests.mbti.questions.q16'), options: [{ label: t('tests.mbti.options.e16'), value: 'E' }, { label: t('tests.mbti.options.i16'), value: 'I' }] },
+  { id: 17, dimension: 'EI', text: t('tests.mbti.questions.q17'), options: [{ label: t('tests.mbti.options.e17'), value: 'E' }, { label: t('tests.mbti.options.i17'), value: 'I' }] },
+  { id: 18, dimension: 'EI', text: t('tests.mbti.questions.q18'), options: [{ label: t('tests.mbti.options.e18'), value: 'E' }, { label: t('tests.mbti.options.i18'), value: 'I' }] },
+  { id: 19, dimension: 'EI', text: t('tests.mbti.questions.q19'), options: [{ label: t('tests.mbti.options.e19'), value: 'E' }, { label: t('tests.mbti.options.i19'), value: 'I' }] },
+  { id: 20, dimension: 'EI', text: t('tests.mbti.questions.q20'), options: [{ label: t('tests.mbti.options.e20'), value: 'E' }, { label: t('tests.mbti.options.i20'), value: 'I' }] },
+  { id: 21, dimension: 'EI', text: t('tests.mbti.questions.q21'), options: [{ label: t('tests.mbti.options.e21'), value: 'E' }, { label: t('tests.mbti.options.i21'), value: 'I' }] },
+  { id: 22, dimension: 'EI', text: t('tests.mbti.questions.q22'), options: [{ label: t('tests.mbti.options.e22'), value: 'E' }, { label: t('tests.mbti.options.i22'), value: 'I' }] },
+  { id: 23, dimension: 'EI', text: t('tests.mbti.questions.q23'), options: [{ label: t('tests.mbti.options.e23'), value: 'E' }, { label: t('tests.mbti.options.i23'), value: 'I' }] },
+  { id: 24, dimension: 'EI', text: t('tests.mbti.questions.q24'), options: [{ label: t('tests.mbti.options.e24'), value: 'E' }, { label: t('tests.mbti.options.i24'), value: 'I' }] },
 
   // S/N 维度 (24题)
-  { id: 25, dimension: 'SN', text: '在学习新知识时，你更倾向于？', options: [{ label: '先掌握具体事实和操作步骤', value: 'S' }, { label: '先理解整体概念和理论框架', value: 'N' }] },
-  { id: 26, dimension: 'SN', text: '你更信任？', options: [{ label: '亲身经历和已被证明的方法', value: 'S' }, { label: '直觉、灵感和新的可能性', value: 'N' }] },
-  { id: 27, dimension: 'SN', text: '你更喜欢谈论？', options: [{ label: '真实发生的事情，具体的体验', value: 'S' }, { label: '思想实验、假设和未来可能性', value: 'N' }] },
-  { id: 28, dimension: 'SN', text: '阅读说明书时，你更倾向于？', options: [{ label: '从头到尾仔细读完', value: 'S' }, { label: '大概扫一眼，直接上手试', value: 'N' }] },
-  { id: 29, dimension: 'SN', text: '你更擅长？', options: [{ label: '记忆细节，注意微小差异', value: 'S' }, { label: '发现规律，联想模式', value: 'N' }] },
-  { id: 30, dimension: 'SN', text: '你在解决问题时？', options: [{ label: '依赖已有经验和成熟方案', value: 'S' }, { label: '倾向于探索创新方法', value: 'N' }] },
-  { id: 31, dimension: 'SN', text: '你对未来的态度是？', options: [{ label: '关注当下，脚踏实地走一步看一步', value: 'S' }, { label: '喜欢规划和想象各种未来场景', value: 'N' }] },
-  { id: 32, dimension: 'SN', text: '你更喜欢哪类书？', options: [{ label: '传记、纪实、实用指南', value: 'S' }, { label: '科幻、哲学、理论性书籍', value: 'N' }] },
-  { id: 33, dimension: 'SN', text: '描述一件事时，你更倾向于？', options: [{ label: '给出具体细节和例子', value: 'S' }, { label: '抽象描述，传达整体感觉', value: 'N' }] },
-  { id: 34, dimension: 'SN', text: '别人说你更像？', options: [{ label: '实际、脚踏实地', value: 'S' }, { label: '想象力丰富、有点理想主义', value: 'N' }] },
-  { id: 35, dimension: 'SN', text: '你更容易注意到？', options: [{ label: '具体的事物：颜色、形状、声音', value: 'S' }, { label: '事物背后的含义或隐藏规律', value: 'N' }] },
-  { id: 36, dimension: 'SN', text: '你认为更重要的是？', options: [{ label: '如何将想法付诸实践', value: 'S' }, { label: '想法本身的新颖性和可能性', value: 'N' }] },
-  { id: 37, dimension: 'SN', text: '在工作中你更享受？', options: [{ label: '按照既定流程，完成具体任务', value: 'S' }, { label: '设计新流程，解决新问题', value: 'N' }] },
-  { id: 38, dimension: 'SN', text: '你的记忆更偏向？', options: [{ label: '具体事件和细节', value: 'S' }, { label: '整体印象和感受', value: 'N' }] },
-  { id: 39, dimension: 'SN', text: '你更欣赏哪类表达方式？', options: [{ label: '清晰、直接、具体', value: 'S' }, { label: '富有隐喻、意象、联想', value: 'N' }] },
-  { id: 40, dimension: 'SN', text: '对你来说，"有趣"更多意味着？', options: [{ label: '实际体验，动手操作', value: 'S' }, { label: '探索新领域，思维碰撞', value: 'N' }] },
-  { id: 41, dimension: 'SN', text: '你在日常生活中更注意？', options: [{ label: '今天需要做什么，眼前的事', value: 'S' }, { label: '长远目标，这件事有什么意义', value: 'N' }] },
-  { id: 42, dimension: 'SN', text: '你对例行程序的态度？', options: [{ label: '喜欢，给你安全感和效率', value: 'S' }, { label: '有点无聊，更喜欢变化', value: 'N' }] },
-  { id: 43, dimension: 'SN', text: '关于常识与创造力，你认为？', options: [{ label: '常识和经验更可靠', value: 'S' }, { label: '突破常规才能真正创新', value: 'N' }] },
-  { id: 44, dimension: 'SN', text: '你更容易沉浸在？', options: [{ label: '具体技能的精进和练习', value: 'S' }, { label: '新奇想法的探索和联想', value: 'N' }] },
-  { id: 45, dimension: 'SN', text: '你在别人眼中更像？', options: [{ label: '务实稳重的人', value: 'S' }, { label: '有点"飞"、充满奇思妙想的人', value: 'N' }] },
-  { id: 46, dimension: 'SN', text: '你的兴趣爱好通常？', options: [{ label: '集中在几个固定领域，钻研很深', value: 'S' }, { label: '广泛分散，什么都想尝试', value: 'N' }] },
-  { id: 47, dimension: 'SN', text: '当你感到迷茫时？', options: [{ label: '回顾过去的经验找答案', value: 'S' }, { label: '想象未来的可能性找方向', value: 'N' }] },
-  { id: 48, dimension: 'SN', text: '你更享受哪类对话？', options: [{ label: '谈论实际发生的事和具体计划', value: 'S' }, { label: '讨论深层逻辑、哲学或未来构想', value: 'N' }] },
+  { id: 25, dimension: 'SN', text: t('tests.mbti.questions.q25'), options: [{ label: t('tests.mbti.options.s1'), value: 'S' }, { label: t('tests.mbti.options.n1'), value: 'N' }] },
+  { id: 26, dimension: 'SN', text: t('tests.mbti.questions.q26'), options: [{ label: t('tests.mbti.options.s2'), value: 'S' }, { label: t('tests.mbti.options.n2'), value: 'N' }] },
+  { id: 27, dimension: 'SN', text: t('tests.mbti.questions.q27'), options: [{ label: t('tests.mbti.options.s3'), value: 'S' }, { label: t('tests.mbti.options.n3'), value: 'N' }] },
+  { id: 28, dimension: 'SN', text: t('tests.mbti.questions.q28'), options: [{ label: t('tests.mbti.options.s4'), value: 'S' }, { label: t('tests.mbti.options.n4'), value: 'N' }] },
+  { id: 29, dimension: 'SN', text: t('tests.mbti.questions.q29'), options: [{ label: t('tests.mbti.options.s5'), value: 'S' }, { label: t('tests.mbti.options.n5'), value: 'N' }] },
+  { id: 30, dimension: 'SN', text: t('tests.mbti.questions.q30'), options: [{ label: t('tests.mbti.options.s6'), value: 'S' }, { label: t('tests.mbti.options.n6'), value: 'N' }] },
+  { id: 31, dimension: 'SN', text: t('tests.mbti.questions.q31'), options: [{ label: t('tests.mbti.options.s7'), value: 'S' }, { label: t('tests.mbti.options.n7'), value: 'N' }] },
+  { id: 32, dimension: 'SN', text: t('tests.mbti.questions.q32'), options: [{ label: t('tests.mbti.options.s8'), value: 'S' }, { label: t('tests.mbti.options.n8'), value: 'N' }] },
+  { id: 33, dimension: 'SN', text: t('tests.mbti.questions.q33'), options: [{ label: t('tests.mbti.options.s9'), value: 'S' }, { label: t('tests.mbti.options.n9'), value: 'N' }] },
+  { id: 34, dimension: 'SN', text: t('tests.mbti.questions.q34'), options: [{ label: t('tests.mbti.options.s10'), value: 'S' }, { label: t('tests.mbti.options.n10'), value: 'N' }] },
+  { id: 35, dimension: 'SN', text: t('tests.mbti.questions.q35'), options: [{ label: t('tests.mbti.options.s11'), value: 'S' }, { label: t('tests.mbti.options.n11'), value: 'N' }] },
+  { id: 36, dimension: 'SN', text: t('tests.mbti.questions.q36'), options: [{ label: t('tests.mbti.options.s12'), value: 'S' }, { label: t('tests.mbti.options.n12'), value: 'N' }] },
+  { id: 37, dimension: 'SN', text: t('tests.mbti.questions.q37'), options: [{ label: t('tests.mbti.options.s13'), value: 'S' }, { label: t('tests.mbti.options.n13'), value: 'N' }] },
+  { id: 38, dimension: 'SN', text: t('tests.mbti.questions.q38'), options: [{ label: t('tests.mbti.options.s14'), value: 'S' }, { label: t('tests.mbti.options.n14'), value: 'N' }] },
+  { id: 39, dimension: 'SN', text: t('tests.mbti.questions.q39'), options: [{ label: t('tests.mbti.options.s15'), value: 'S' }, { label: t('tests.mbti.options.n15'), value: 'N' }] },
+  { id: 40, dimension: 'SN', text: t('tests.mbti.questions.q40'), options: [{ label: t('tests.mbti.options.s16'), value: 'S' }, { label: t('tests.mbti.options.n16'), value: 'N' }] },
+  { id: 41, dimension: 'SN', text: t('tests.mbti.questions.q41'), options: [{ label: t('tests.mbti.options.s17'), value: 'S' }, { label: t('tests.mbti.options.n17'), value: 'N' }] },
+  { id: 42, dimension: 'SN', text: t('tests.mbti.questions.q42'), options: [{ label: t('tests.mbti.options.s18'), value: 'S' }, { label: t('tests.mbti.options.n18'), value: 'N' }] },
+  { id: 43, dimension: 'SN', text: t('tests.mbti.questions.q43'), options: [{ label: t('tests.mbti.options.s19'), value: 'S' }, { label: t('tests.mbti.options.n19'), value: 'N' }] },
+  { id: 44, dimension: 'SN', text: t('tests.mbti.questions.q44'), options: [{ label: t('tests.mbti.options.s20'), value: 'S' }, { label: t('tests.mbti.options.n20'), value: 'N' }] },
+  { id: 45, dimension: 'SN', text: t('tests.mbti.questions.q45'), options: [{ label: t('tests.mbti.options.s21'), value: 'S' }, { label: t('tests.mbti.options.n21'), value: 'N' }] },
+  { id: 46, dimension: 'SN', text: t('tests.mbti.questions.q46'), options: [{ label: t('tests.mbti.options.s22'), value: 'S' }, { label: t('tests.mbti.options.n22'), value: 'N' }] },
+  { id: 47, dimension: 'SN', text: t('tests.mbti.questions.q47'), options: [{ label: t('tests.mbti.options.s23'), value: 'S' }, { label: t('tests.mbti.options.n23'), value: 'N' }] },
+  { id: 48, dimension: 'SN', text: t('tests.mbti.questions.q48'), options: [{ label: t('tests.mbti.options.s24'), value: 'S' }, { label: t('tests.mbti.options.n24'), value: 'N' }] },
 
   // T/F 维度 (24题)
-  { id: 49, dimension: 'TF', text: '做决定时，你更依赖？', options: [{ label: '客观逻辑和数据分析', value: 'T' }, { label: '内心的感受和对他人的影响', value: 'F' }] },
-  { id: 50, dimension: 'TF', text: '朋友来向你倾诉烦恼，你更倾向于？', options: [{ label: '帮他分析问题所在，给出建议', value: 'T' }, { label: '先表达理解和情感支持', value: 'F' }] },
-  { id: 51, dimension: 'TF', text: '你更看重工作/学习中的？', options: [{ label: '公平和结果是否正确合理', value: 'T' }, { label: '团队和谐和每个人的感受', value: 'F' }] },
-  { id: 52, dimension: 'TF', text: '当你批评他人时？', options: [{ label: '直接指出问题，不绕弯子', value: 'T' }, { label: '先照顾情绪，委婉地提出', value: 'F' }] },
-  { id: 53, dimension: 'TF', text: '被批评时，你的第一反应是？', options: [{ label: '分析对方说的是否有道理', value: 'T' }, { label: '感到难过或受伤', value: 'F' }] },
-  { id: 54, dimension: 'TF', text: '在争论中，你更在乎？', options: [{ label: '谁的论点更符合逻辑', value: 'T' }, { label: '避免伤害感情，维护关系', value: 'F' }] },
-  { id: 55, dimension: 'TF', text: '你认为好的领导者应该？', options: [{ label: '严格执行规则，公正无私', value: 'T' }, { label: '关注团队成员的需求和情绪', value: 'F' }] },
-  { id: 56, dimension: 'TF', text: '面对艰难选择，你更可能？', options: [{ label: '选择在逻辑上最优的选项', value: 'T' }, { label: '选择对所有人伤害最小的选项', value: 'F' }] },
-  { id: 57, dimension: 'TF', text: '你更擅长？', options: [{ label: '找出问题的根本原因', value: 'T' }, { label: '感知他人的情绪变化', value: 'F' }] },
-  { id: 58, dimension: 'TF', text: '对于规则，你认为？', options: [{ label: '规则应当被一致执行', value: 'T' }, { label: '特殊情况可以通融', value: 'F' }] },
-  { id: 59, dimension: 'TF', text: '你更容易被打动的是？', options: [{ label: '一个精密严谨的逻辑论证', value: 'T' }, { label: '一个感人的故事或情感呼吁', value: 'F' }] },
-  { id: 60, dimension: 'TF', text: '你在乎别人怎么看你吗？', options: [{ label: '相对不在乎，更在乎自己的判断', value: 'T' }, { label: '比较在乎，别人的看法会影响你', value: 'F' }] },
-  { id: 61, dimension: 'TF', text: '作为组员，你更想要？', options: [{ label: '明确的任务分工和量化目标', value: 'T' }, { label: '良好的团队氛围和相互支持', value: 'F' }] },
-  { id: 62, dimension: 'TF', text: '看到路人哭泣，你的第一反应是？', options: [{ label: '好奇发生了什么，是否需要帮助', value: 'T' }, { label: '心里一紧，感到难过和同情', value: 'F' }] },
-  { id: 63, dimension: 'TF', text: '你更喜欢的沟通风格是？', options: [{ label: '直接、高效，去掉废话', value: 'T' }, { label: '温和、体贴，注重措辞', value: 'F' }] },
-  { id: 64, dimension: 'TF', text: '你认为自己更擅长？', options: [{ label: '分析和批判性思维', value: 'T' }, { label: '同理心和情感支持', value: 'F' }] },
-  { id: 65, dimension: 'TF', text: '当价值观和逻辑冲突时？', options: [{ label: '逻辑优先', value: 'T' }, { label: '价值观优先', value: 'F' }] },
-  { id: 66, dimension: 'TF', text: '处理人际冲突时？', options: [{ label: '直接说清楚问题所在，解决它', value: 'T' }, { label: '先修复关系，再讨论问题', value: 'F' }] },
-  { id: 67, dimension: 'TF', text: '你更倾向于把友谊建立在？', options: [{ label: '共同的兴趣、理念', value: 'T' }, { label: '深厚的情感连接和信任', value: 'F' }] },
-  { id: 68, dimension: 'TF', text: '当你遇到不公平的事时？', options: [{ label: '分析清楚是非对错，据理力争', value: 'T' }, { label: '感到愤慨，优先想到受害者的感受', value: 'F' }] },
-  { id: 69, dimension: 'TF', text: '你给别人的印象更像？', options: [{ label: '冷静理性、客观', value: 'T' }, { label: '温暖体贴、有人情味', value: 'F' }] },
-  { id: 70, dimension: 'TF', text: '面试时你更会强调？', options: [{ label: '自己的能力和成绩', value: 'T' }, { label: '自己对团队的贡献和合作精神', value: 'F' }] },
-  { id: 71, dimension: 'TF', text: '你认为"真正的善意"应该是？', options: [{ label: '诚实告知对方真相，哪怕不好听', value: 'T' }, { label: '根据对方的情绪和需求来表达', value: 'F' }] },
-  { id: 72, dimension: 'TF', text: '你通常如何评价一个决策的好坏？', options: [{ label: '看它的逻辑是否一致、结果是否有效', value: 'T' }, { label: '看它是否照顾到了所有人的感受', value: 'F' }] },
+  { id: 49, dimension: 'TF', text: t('tests.mbti.questions.q49'), options: [{ label: t('tests.mbti.options.t1'), value: 'T' }, { label: t('tests.mbti.options.f1'), value: 'F' }] },
+  { id: 50, dimension: 'TF', text: t('tests.mbti.questions.q50'), options: [{ label: t('tests.mbti.options.t2'), value: 'T' }, { label: t('tests.mbti.options.f2'), value: 'F' }] },
+  { id: 51, dimension: 'TF', text: t('tests.mbti.questions.q51'), options: [{ label: t('tests.mbti.options.t3'), value: 'T' }, { label: t('tests.mbti.options.f3'), value: 'F' }] },
+  { id: 52, dimension: 'TF', text: t('tests.mbti.questions.q52'), options: [{ label: t('tests.mbti.options.t4'), value: 'T' }, { label: t('tests.mbti.options.f4'), value: 'F' }] },
+  { id: 53, dimension: 'TF', text: t('tests.mbti.questions.q53'), options: [{ label: t('tests.mbti.options.t5'), value: 'T' }, { label: t('tests.mbti.options.f5'), value: 'F' }] },
+  { id: 54, dimension: 'TF', text: t('tests.mbti.questions.q54'), options: [{ label: t('tests.mbti.options.t6'), value: 'T' }, { label: t('tests.mbti.options.f6'), value: 'F' }] },
+  { id: 55, dimension: 'TF', text: t('tests.mbti.questions.q55'), options: [{ label: t('tests.mbti.options.t7'), value: 'T' }, { label: t('tests.mbti.options.f7'), value: 'F' }] },
+  { id: 56, dimension: 'TF', text: t('tests.mbti.questions.q56'), options: [{ label: t('tests.mbti.options.t8'), value: 'T' }, { label: t('tests.mbti.options.f8'), value: 'F' }] },
+  { id: 57, dimension: 'TF', text: t('tests.mbti.questions.q57'), options: [{ label: t('tests.mbti.options.t9'), value: 'T' }, { label: t('tests.mbti.options.f9'), value: 'F' }] },
+  { id: 58, dimension: 'TF', text: t('tests.mbti.questions.q58'), options: [{ label: t('tests.mbti.options.t10'), value: 'T' }, { label: t('tests.mbti.options.f10'), value: 'F' }] },
+  { id: 59, dimension: 'TF', text: t('tests.mbti.questions.q59'), options: [{ label: t('tests.mbti.options.t11'), value: 'T' }, { label: t('tests.mbti.options.f11'), value: 'F' }] },
+  { id: 60, dimension: 'TF', text: t('tests.mbti.questions.q60'), options: [{ label: t('tests.mbti.options.t12'), value: 'T' }, { label: t('tests.mbti.options.f12'), value: 'F' }] },
+  { id: 61, dimension: 'TF', text: t('tests.mbti.questions.q61'), options: [{ label: t('tests.mbti.options.t13'), value: 'T' }, { label: t('tests.mbti.options.f13'), value: 'F' }] },
+  { id: 62, dimension: 'TF', text: t('tests.mbti.questions.q62'), options: [{ label: t('tests.mbti.options.t14'), value: 'T' }, { label: t('tests.mbti.options.f14'), value: 'F' }] },
+  { id: 63, dimension: 'TF', text: t('tests.mbti.questions.q63'), options: [{ label: t('tests.mbti.options.t15'), value: 'T' }, { label: t('tests.mbti.options.f15'), value: 'F' }] },
+  { id: 64, dimension: 'TF', text: t('tests.mbti.questions.q64'), options: [{ label: t('tests.mbti.options.t16'), value: 'T' }, { label: t('tests.mbti.options.f16'), value: 'F' }] },
+  { id: 65, dimension: 'TF', text: t('tests.mbti.questions.q65'), options: [{ label: t('tests.mbti.options.t17'), value: 'T' }, { label: t('tests.mbti.options.f17'), value: 'F' }] },
+  { id: 66, dimension: 'TF', text: t('tests.mbti.questions.q66'), options: [{ label: t('tests.mbti.options.t18'), value: 'T' }, { label: t('tests.mbti.options.f18'), value: 'F' }] },
+  { id: 67, dimension: 'TF', text: t('tests.mbti.questions.q67'), options: [{ label: t('tests.mbti.options.t19'), value: 'T' }, { label: t('tests.mbti.options.f19'), value: 'F' }] },
+  { id: 68, dimension: 'TF', text: t('tests.mbti.questions.q68'), options: [{ label: t('tests.mbti.options.t20'), value: 'T' }, { label: t('tests.mbti.options.f20'), value: 'F' }] },
+  { id: 69, dimension: 'TF', text: t('tests.mbti.questions.q69'), options: [{ label: t('tests.mbti.options.t21'), value: 'T' }, { label: t('tests.mbti.options.f21'), value: 'F' }] },
+  { id: 70, dimension: 'TF', text: t('tests.mbti.questions.q70'), options: [{ label: t('tests.mbti.options.t22'), value: 'T' }, { label: t('tests.mbti.options.f22'), value: 'F' }] },
+  { id: 71, dimension: 'TF', text: t('tests.mbti.questions.q71'), options: [{ label: t('tests.mbti.options.t23'), value: 'T' }, { label: t('tests.mbti.options.f23'), value: 'F' }] },
+  { id: 72, dimension: 'TF', text: t('tests.mbti.questions.q72'), options: [{ label: t('tests.mbti.options.t24'), value: 'T' }, { label: t('tests.mbti.options.f24'), value: 'F' }] },
 
   // J/P 维度 (21题)
-  { id: 73, dimension: 'JP', text: '你的日常生活通常是？', options: [{ label: '有规律，按照计划进行', value: 'J' }, { label: '灵活随性，顺势而为', value: 'P' }] },
-  { id: 74, dimension: 'JP', text: '面对截止日期，你通常？', options: [{ label: '提前完成，不喜欢最后一刻的压力', value: 'J' }, { label: '在压力下爆发，常在最后时刻冲刺', value: 'P' }] },
-  { id: 75, dimension: 'JP', text: '你的桌面/房间通常是？', options: [{ label: '整洁有序，一切各归其位', value: 'J' }, { label: '有些凌乱，但自己知道东西在哪', value: 'P' }] },
-  { id: 76, dimension: 'JP', text: '计划旅行时，你更倾向于？', options: [{ label: '提前规划行程，订好一切', value: 'J' }, { label: '大概定个方向，到了再说', value: 'P' }] },
-  { id: 77, dimension: 'JP', text: '你更喜欢在工作上？', options: [{ label: '完成一件再开始另一件', value: 'J' }, { label: '同时推进多件事，灵活切换', value: 'P' }] },
-  { id: 78, dimension: 'JP', text: '突然改变计划让你感到？', options: [{ label: '不适，需要时间调整', value: 'J' }, { label: '兴奋，新的可能性', value: 'P' }] },
-  { id: 79, dimension: 'JP', text: '你对"选项开放"的态度？', options: [{ label: '不喜欢，更想尽快做出决定', value: 'J' }, { label: '喜欢，保留弹性让你安心', value: 'P' }] },
-  { id: 80, dimension: 'JP', text: '你在购物时通常？', options: [{ label: '列好清单，按需购买', value: 'J' }, { label: '看到喜欢的就买，随机性强', value: 'P' }] },
-  { id: 81, dimension: 'JP', text: '做事时，你更注重？', options: [{ label: '结构和步骤，一步一步来', value: 'J' }, { label: '灵感和创意，走到哪算哪', value: 'P' }] },
-  { id: 82, dimension: 'JP', text: '你对待规则的态度是？', options: [{ label: '规则就是要遵守的', value: 'J' }, { label: '规则可以灵活解读', value: 'P' }] },
-  { id: 83, dimension: 'JP', text: '做完一件事你通常感到？', options: [{ label: '满足感，可以划掉清单了', value: 'J' }, { label: '有点空虚，不知道下一步', value: 'P' }] },
-  { id: 84, dimension: 'JP', text: '如果发现计划有漏洞，你会？', options: [{ label: '立刻修正，重新制定计划', value: 'J' }, { label: '随机应变，临时处理', value: 'P' }] },
-  { id: 85, dimension: 'JP', text: '你的日程表是？', options: [{ label: '详细完整，基本不会漏事', value: 'J' }, { label: '比较空，很多事记在脑子里', value: 'P' }] },
-  { id: 86, dimension: 'JP', text: '等别人迟到时，你感到？', options: [{ label: '烦躁，时间很宝贵', value: 'J' }, { label: '无所谓，可以刷刷手机', value: 'P' }] },
-  { id: 87, dimension: 'JP', text: '你的学习/工作方式更像？', options: [{ label: '系统性地完成，再检查', value: 'J' }, { label: '随兴趣走，思维发散', value: 'P' }] },
-  { id: 88, dimension: 'JP', text: '你觉得生活中最让你舒适的状态是？', options: [{ label: '一切有序、在掌控中', value: 'J' }, { label: '自由灵活，不被计划束缚', value: 'P' }] },
-  { id: 89, dimension: 'JP', text: '你如何看待"提前完成"？', options: [{ label: '应该的，早做早好', value: 'J' }, { label: '有时反而灵感不够，最后更好', value: 'P' }] },
-  { id: 90, dimension: 'JP', text: '你在别人眼中更像？', options: [{ label: '可靠有条理的人', value: 'J' }, { label: '随和灵活的人', value: 'P' }] },
-  { id: 91, dimension: 'JP', text: '你对"完美主义"的感受？', options: [{ label: '认同，不做好就不想交出去', value: 'J' }, { label: '有时会，但差不多就行了', value: 'P' }] },
-  { id: 92, dimension: 'JP', text: '你觉得"效率"更体现在？', options: [{ label: '提前规划，减少返工', value: 'J' }, { label: '快速响应，随机应变', value: 'P' }] },
-  { id: 93, dimension: 'JP', text: '你的人生目标是？', options: [{ label: '有明确规划，一步一步实现', value: 'J' }, { label: '大方向有，细节随缘', value: 'P' }] },
+  { id: 73, dimension: 'JP', text: t('tests.mbti.questions.q73'), options: [{ label: t('tests.mbti.options.j1'), value: 'J' }, { label: t('tests.mbti.options.p1'), value: 'P' }] },
+  { id: 74, dimension: 'JP', text: t('tests.mbti.questions.q74'), options: [{ label: t('tests.mbti.options.j2'), value: 'J' }, { label: t('tests.mbti.options.p2'), value: 'P' }] },
+  { id: 75, dimension: 'JP', text: t('tests.mbti.questions.q75'), options: [{ label: t('tests.mbti.options.j3'), value: 'J' }, { label: t('tests.mbti.options.p3'), value: 'P' }] },
+  { id: 76, dimension: 'JP', text: t('tests.mbti.questions.q76'), options: [{ label: t('tests.mbti.options.j4'), value: 'J' }, { label: t('tests.mbti.options.p4'), value: 'P' }] },
+  { id: 77, dimension: 'JP', text: t('tests.mbti.questions.q77'), options: [{ label: t('tests.mbti.options.j5'), value: 'J' }, { label: t('tests.mbti.options.p5'), value: 'P' }] },
+  { id: 78, dimension: 'JP', text: t('tests.mbti.questions.q78'), options: [{ label: t('tests.mbti.options.j6'), value: 'J' }, { label: t('tests.mbti.options.p6'), value: 'P' }] },
+  { id: 79, dimension: 'JP', text: t('tests.mbti.questions.q79'), options: [{ label: t('tests.mbti.options.j7'), value: 'J' }, { label: t('tests.mbti.options.p7'), value: 'P' }] },
+  { id: 80, dimension: 'JP', text: t('tests.mbti.questions.q80'), options: [{ label: t('tests.mbti.options.j8'), value: 'J' }, { label: t('tests.mbti.options.p8'), value: 'P' }] },
+  { id: 81, dimension: 'JP', text: t('tests.mbti.questions.q81'), options: [{ label: t('tests.mbti.options.j9'), value: 'J' }, { label: t('tests.mbti.options.p9'), value: 'P' }] },
+  { id: 82, dimension: 'JP', text: t('tests.mbti.questions.q82'), options: [{ label: t('tests.mbti.options.j10'), value: 'J' }, { label: t('tests.mbti.options.p10'), value: 'P' }] },
+  { id: 83, dimension: 'JP', text: t('tests.mbti.questions.q83'), options: [{ label: t('tests.mbti.options.j11'), value: 'J' }, { label: t('tests.mbti.options.p11'), value: 'P' }] },
+  { id: 84, dimension: 'JP', text: t('tests.mbti.questions.q84'), options: [{ label: t('tests.mbti.options.j12'), value: 'J' }, { label: t('tests.mbti.options.p12'), value: 'P' }] },
+  { id: 85, dimension: 'JP', text: t('tests.mbti.questions.q85'), options: [{ label: t('tests.mbti.options.j13'), value: 'J' }, { label: t('tests.mbti.options.p13'), value: 'P' }] },
+  { id: 86, dimension: 'JP', text: t('tests.mbti.questions.q86'), options: [{ label: t('tests.mbti.options.j14'), value: 'J' }, { label: t('tests.mbti.options.p14'), value: 'P' }] },
+  { id: 87, dimension: 'JP', text: t('tests.mbti.questions.q87'), options: [{ label: t('tests.mbti.options.j15'), value: 'J' }, { label: t('tests.mbti.options.p15'), value: 'P' }] },
+  { id: 88, dimension: 'JP', text: t('tests.mbti.questions.q88'), options: [{ label: t('tests.mbti.options.j16'), value: 'J' }, { label: t('tests.mbti.options.p16'), value: 'P' }] },
+  { id: 89, dimension: 'JP', text: t('tests.mbti.questions.q89'), options: [{ label: t('tests.mbti.options.j17'), value: 'J' }, { label: t('tests.mbti.options.p17'), value: 'P' }] },
+  { id: 90, dimension: 'JP', text: t('tests.mbti.questions.q90'), options: [{ label: t('tests.mbti.options.j18'), value: 'J' }, { label: t('tests.mbti.options.p18'), value: 'P' }] },
+  { id: 91, dimension: 'JP', text: t('tests.mbti.questions.q91'), options: [{ label: t('tests.mbti.options.j19'), value: 'J' }, { label: t('tests.mbti.options.p19'), value: 'P' }] },
+  { id: 92, dimension: 'JP', text: t('tests.mbti.questions.q92'), options: [{ label: t('tests.mbti.options.j20'), value: 'J' }, { label: t('tests.mbti.options.p20'), value: 'P' }] },
+  { id: 93, dimension: 'JP', text: t('tests.mbti.questions.q93'), options: [{ label: t('tests.mbti.options.j21'), value: 'J' }, { label: t('tests.mbti.options.p21'), value: 'P' }] },
 ])
 
 // ---- 状态 ----
@@ -274,7 +276,12 @@ const selectAnswer = (id: number, value: string, dimension: string) => {
 }
 
 const dimensionLabel = (dim: string) => {
-  const map: Record<string, string> = { EI: '外向/内向', SN: '感知/直觉', TF: '思维/情感', JP: '判断/感知' }
+  const map: Record<string, string> = { 
+    EI: t('tests.mbti.dimensions.EI'), 
+    SN: t('tests.mbti.dimensions.SN'), 
+    TF: t('tests.mbti.dimensions.TF'), 
+    JP: t('tests.mbti.dimensions.JP') 
+  }
   return map[dim] || dim
 }
 

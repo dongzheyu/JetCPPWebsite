@@ -1974,6 +1974,42 @@ footer {
   border-color: #ff5d8f;
 }
 
+.traffic-card {
+  border-color: #2a9d8f;
+}
+
+.sms-card {
+  border-color: #264653;
+}
+
+.water-card {
+  border-color: #219ebc;
+}
+
+.forest-card {
+  border-color: #27ae60;
+}
+
+.redcross-card {
+  border-color: #e63946;
+}
+
+.sos-card {
+  border-color: #7209b7;
+}
+
+.weather-card {
+  border-color: #4361ee;
+}
+
+.time-card {
+  border-color: #fca311;
+}
+
+.emergency-card {
+  color: inherit;
+}
+
 .card-icon {
   font-size: 2.5rem;
   margin-bottom: 20px;

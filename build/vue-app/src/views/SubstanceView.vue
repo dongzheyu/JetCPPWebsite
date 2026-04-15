@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="substance-page">
     <!-- Hero -->
     <section class="test-hero substance-hero">
@@ -6,13 +6,13 @@
         <div class="row align-items-center">
           <div class="col-lg-8" style="padding-left: 5%;">
             <RouterLink to="/tests" class="back-link mb-4 d-inline-flex align-items-center gap-2">
-              <i class="bi bi-arrow-left"></i> 返回评估列表
+              <i class="bi bi-arrow-left"></i> {{ t('tests.backToList') }}
             </RouterLink>
-            <h1 class="test-hero-title mb-3">物质使用障碍测试</h1>
-            <p class="test-hero-sub mb-2">AUDIT + DAST-10 综合筛查 · 20 道题 · 约 5 分钟</p>
+            <h1 class="test-hero-title mb-3">{{ t('tests.substance.title') }}</h1>
+            <p class="test-hero-sub mb-2">{{ t('tests.substance.subtitle') }}</p>
             <p class="test-hero-desc">
-              本测试结合酒精使用障碍测试（AUDIT）和药物滥用筛查（DAST-10），
-              综合评估酒精和药物使用相关问题。请根据过去一年内你的真实情况作答。
+              {{ t('tests.substance.description') }}
+              {{ t('tests.substance.instruction') }}
             </p>
           </div>
         </div>
@@ -52,26 +52,26 @@
           <!-- 提交按钮 -->
           <div class="submit-section">
             <button type="submit" class="btn btn-animate submit-btn" :disabled="!allAnswered">
-              {{ allAnswered ? '查看评估结果' : `请完成所有题目 (${answeredCount}/${questions.length})` }}
+              {{ allAnswered ? t('tests.viewResult') : t('tests.completeAllQuestions', { answered: answeredCount, total: questions.length }) }}
             </button>
           </div>
         </form>
 
         <!-- 结果部分 -->
         <div v-if="showResult" class="result-section">
-          <h2 class="result-title">评估结果</h2>
+          <h2 class="result-title">{{ t('tests.substance.resultTitle') }}</h2>
           <div class="result-card">
             <div class="score-display">
-              <span class="score-label">酒精风险评分</span>
+              <span class="score-label">{{ t('tests.substance.alcoholScore') }}</span>
               <div class="score-value">{{ alcoholScore }}</div>
-              <div class="score-range">药物风险评分: {{ drugScore }}</div>
+              <div class="score-range">{{ t('tests.substance.drugScore') }}: {{ drugScore }}</div>
             </div>
             <div class="result-interpretation">
-              <h3>结果解读</h3>
+              <h3>{{ t('tests.substance.resultInterpretation') }}</h3>
               <p v-html="resultInterpretation"></p>
             </div>
             <div class="result-actions">
-              <button @click="resetTest" class="btn btn-secondary">重新评估</button>
+              <button @click="resetTest" class="btn btn-secondary">{{ t('tests.resetTest') }}</button>
             </div>
           </div>
         </div>
@@ -82,6 +82,10 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 // 物质使用障碍题目 (AUDIT + DAST-10)
 const questions = ref([
@@ -187,25 +191,25 @@ const resultInterpretation = computed(() => {
   const alcScore = alcoholScore.value
   const drgScore = drugScore.value
   
-  let result = '<strong>酒精使用风险：</strong>'
+  let result = `<strong>${t('tests.substance.alcoholRisk')}：</strong>`
   
   if (alcScore < 8) {
-    result += '低风险<br>'
+    result += `${t('tests.substance.lowRisk')}<br>`
   } else if (alcScore < 16) {
-    result += '有害使用（建议减少）<br>'
+    result += `${t('tests.substance.harmfulUse')}<br>`
   } else {
-    result += '高风险（建议专业评估）<br>'
+    result += `${t('tests.substance.highRisk')}<br>`
   }
   
-  result += '<strong>药物使用风险：</strong>'
+  result += `<strong>${t('tests.substance.drugRisk')}：</strong>`
   if (drgScore === 0) {
-    result += '无风险<br>'
+    result += `${t('tests.substance.noRisk')}<br>`
   } else if (drgScore < 3) {
-    result += '低风险<br>'
+    result += `${t('tests.substance.lowRisk')}<br>`
   } else if (drgScore < 6) {
-    result += '中等风险（建议评估）<br>'
+    result += `${t('tests.substance.moderateRisk')}<br>`
   } else {
-    result += '高风险（建议专业帮助）<br>'
+    result += `${t('tests.substance.highRiskDrug')}<br>`
   }
   
   return result

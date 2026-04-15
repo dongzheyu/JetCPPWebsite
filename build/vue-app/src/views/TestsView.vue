@@ -5,13 +5,13 @@
         <div class="row align-items-center">
           <div class="col-lg-8" style="padding-left: 5%;">
             <h1 class="tests-title mb-4 animate-slide-up" :class="{ 'visible': isVisible }">
-              心理评估 <span class="text-gradient">— 了解自己</span>
+              {{ t('tests.title') }} <span class="text-gradient">— {{ t('tests.subtitle') }}</span>
             </h1>
             <p class="tests-subtitle mb-4 animate-slide-up" :class="{ 'visible': isVisible }" style="animation-delay: 0.15s">
-              基于标准量表，探索你的人格类型与心理状态
+              {{ t('tests.description') }}
             </p>
             <p class="tests-desc animate-slide-up" :class="{ 'visible': isVisible }" style="animation-delay: 0.3s">
-              以下测试仅供参考，不构成任何医学或心理学诊断依据。如有需要，请寻求专业心理咨询师的帮助。
+              {{ t('tests.disclaimer') }}
             </p>
           </div>
         </div>
@@ -39,17 +39,17 @@
                   <p class="test-card-desc mb-3">{{ test.description }}</p>
                   <div class="test-meta d-flex gap-3">
                     <span class="meta-item">
-                      <i class="bi bi-list-check me-1"></i>{{ test.questions }} 题
+                      <i class="bi bi-list-check me-1"></i>{{ test.questions }} {{ t('tests.questions') }}
                     </span>
                     <span class="meta-item">
-                      <i class="bi bi-clock me-1"></i>约 {{ test.minutes }} 分钟
+                      <i class="bi bi-clock me-1"></i>{{ test.minutes }} {{ t('tests.minutes') }}
                     </span>
                   </div>
                 </div>
                 <div class="card-footer border-0 p-4 pt-0">
                   <span class="btn btn-animate w-100 text-center" :style="`--btn-color: ${test.color}`"
                         :class="`btn-test-${test.id}`">
-                    开始评估
+                    {{ t('tests.startTest') }}
                   </span>
                 </div>
               </div>
@@ -64,8 +64,8 @@
         <div class="disclaimer-box animate-slide-up" :class="{ 'visible': isVisible }" style="animation-delay: 0.6s">
           <i class="bi bi-info-circle disclaimer-icon"></i>
           <div>
-            <strong>免责声明</strong>
-            <p>本页面所有测试均基于公开标准量表，仅供个人参考与自我认知。测试结果不能替代专业的心理健康评估。若你感到持续的心理困扰，请及时联系心理卫生专业人士。</p>
+            <strong>{{ t('tests.footerDisclaimer') }}</strong>
+            <p>{{ t('tests.footerText') }}</p>
           </div>
         </div>
       </div>
@@ -74,18 +74,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useAnimations } from '@/composables/useAnimations'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const { isVisible } = useAnimations()
 
-const tests = ref([
+const tests = computed(() => [
   {
     id: 'mbti',
     path: '/tests/mbti',
-    title: 'MBTI 人格测试',
-    description: '基于迈尔斯-布里格斯类型指标，通过 93 道题目测出你在四个维度上的偏好，识别 16 种人格类型之一。',
+    title: t('tests.mbti.title'),
+    description: t('tests.mbti.description'),
     icon: 'bi bi-diagram-3',
     badge: 'MBTI',
     gradient: 'linear-gradient(135deg, rgba(255,140,66,0.15) 0%, rgba(244,140,6,0.08) 100%)',
@@ -96,8 +98,8 @@ const tests = ref([
   {
     id: 'depression',
     path: '/tests/depression',
-    title: '抑郁症自评测试',
-    description: '基于 PHQ-9 患者健康问卷，是国际广泛使用的抑郁症筛查工具，包含 9 个核心症状问题。',
+    title: t('tests.depression.title'),
+    description: t('tests.depression.description'),
     icon: 'bi bi-heart-pulse',
     badge: 'PHQ-9',
     gradient: 'linear-gradient(135deg, rgba(239,35,60,0.12) 0%, rgba(217,4,41,0.06) 100%)',
@@ -108,10 +110,10 @@ const tests = ref([
   {
     id: 'sunshine',
     path: '/tests/sunshine',
-    title: '阳光抑郁症测试',
-    description: '识别"微笑型抑郁"特征——表面乐观开朗，内心却承受痛苦。通过 15 道题目评估这一隐性状态。',
+    title: t('tests.sunshine.title'),
+    description: t('tests.sunshine.description'),
     icon: 'bi bi-sun',
-    badge: '微笑抑郁',
+    badge: t('tests.sunshine.badge'),
     gradient: 'linear-gradient(135deg, rgba(255,186,8,0.15) 0%, rgba(244,140,6,0.08) 100%)',
     color: '#f48c06',
     questions: 15,
@@ -120,8 +122,8 @@ const tests = ref([
   {
     id: 'anxiety',
     path: '/tests/anxiety',
-    title: '焦虑症自评测试',
-    description: '基于 GAD-7 广泛性焦虑量表，评估过去两周内的焦虑症状频率，共 7 个核心问题。',
+    title: t('tests.anxiety.title'),
+    description: t('tests.anxiety.description'),
     icon: 'bi bi-shield-exclamation',
     badge: 'GAD-7',
     gradient: 'linear-gradient(135deg, rgba(244,140,6,0.15) 0%, rgba(232,93,4,0.08) 100%)',
@@ -132,8 +134,8 @@ const tests = ref([
   {
     id: 'bipolar',
     path: '/tests/bipolar',
-    title: '双相情感障碍测试',
-    description: '心境障碍问卷（MDQ）筛查工具，评估躁狂/轻躁狂症状，共 13 个问题。',
+    title: t('tests.bipolar.title'),
+    description: t('tests.bipolar.description'),
     icon: 'bi bi-arrow-up-down',
     badge: 'MDQ',
     gradient: 'linear-gradient(135deg, rgba(114,9,183,0.15) 0%, rgba(123,44,191,0.08) 100%)',
@@ -144,21 +146,21 @@ const tests = ref([
   {
     id: 'phobia',
     path: '/tests/phobia',
-    title: '恐惧症综合测试',
-    description: '结合社交恐惧量表（SPIN）和特定恐惧症筛查，评估各类恐惧症状，共 22 题。',
+    title: t('tests.phobia.title'),
+    description: t('tests.phobia.description'),
     icon: 'bi bi-emoji-dizzy',
     badge: 'SPIN',
     gradient: 'linear-gradient(135deg, rgba(22,138,173,0.15) 0%, rgba(32,156,192,0.08) 100%)',
     color: '#168aad',
-    colorDark: '#5acce6', /* 深色主题下使用更浅的蓝绿色 */
+    colorDark: '#5acce6',
     questions: 22,
     minutes: 7
   },
   {
     id: 'ptsd',
     path: '/tests/ptsd',
-    title: 'PTSD 自评测试',
-    description: '基于 PTSD 检查表（PCL-5），评估创伤后应激障碍症状，符合 DSM-5 标准，共 20 题。',
+    title: t('tests.ptsd.title'),
+    description: t('tests.ptsd.description'),
     icon: 'bi bi-lightning',
     badge: 'PCL-5',
     gradient: 'linear-gradient(135deg, rgba(157,2,8,0.15) 0%, rgba(177,32,38,0.08) 100%)',
@@ -169,8 +171,8 @@ const tests = ref([
   {
     id: 'ocd',
     path: '/tests/ocd',
-    title: '强迫症自评测试',
-    description: '强迫症状量表（OCI-R）评估强迫思维和行为，包含 18 个核心症状问题。',
+    title: t('tests.ocd.title'),
+    description: t('tests.ocd.description'),
     icon: 'bi bi-arrow-repeat',
     badge: 'OCI-R',
     gradient: 'linear-gradient(135deg, rgba(58,12,163,0.15) 0%, rgba(88,42,193,0.08) 100%)',
@@ -181,8 +183,8 @@ const tests = ref([
   {
     id: 'eating',
     path: '/tests/eating',
-    title: '进食障碍自评测试',
-    description: '进食态度测试（EAT-26）筛查厌食症、贪食症等进食障碍风险，共 26 题。',
+    title: t('tests.eating.title'),
+    description: t('tests.eating.description'),
     icon: 'bi bi-heart-half',
     badge: 'EAT-26',
     gradient: 'linear-gradient(135deg, rgba(255,93,143,0.15) 0%, rgba(255,113,163,0.08) 100%)',
@@ -193,8 +195,8 @@ const tests = ref([
   {
     id: 'substance',
     path: '/tests/substance',
-    title: '物质使用障碍测试',
-    description: '结合酒精使用障碍测试（AUDIT）和药物滥用筛查（DAST-10），共 20 题。',
+    title: t('tests.substance.title'),
+    description: t('tests.substance.description'),
     icon: 'bi bi-droplet-half',
     badge: 'AUDIT',
     gradient: 'linear-gradient(135deg, rgba(232,93,4,0.15) 0%, rgba(242,113,24,0.08) 100%)',
@@ -205,8 +207,8 @@ const tests = ref([
   {
     id: 'gambling',
     path: '/tests/gambling',
-    title: '赌博障碍自评测试',
-    description: '赌博问题严重性指数（PGSI）评估赌博问题严重程度，共 9 题。',
+    title: t('tests.gambling.title'),
+    description: t('tests.gambling.description'),
     icon: 'bi bi-dice-6',
     badge: 'PGSI',
     gradient: 'linear-gradient(135deg, rgba(109,76,65,0.15) 0%, rgba(129,96,85,0.08) 100%)',
@@ -217,8 +219,8 @@ const tests = ref([
   {
     id: 'gaming',
     path: '/tests/gaming',
-    title: '游戏障碍自评测试',
-    description: '网络游戏障碍测试（IGD-20）根据 DSM-5 研究标准开发，共 20 题。',
+    title: t('tests.gaming.title'),
+    description: t('tests.gaming.description'),
     icon: 'bi bi-controller',
     badge: 'IGD-20',
     gradient: 'linear-gradient(135deg, rgba(6,214,160,0.15) 0%, rgba(26,234,180,0.08) 100%)',
@@ -229,8 +231,8 @@ const tests = ref([
   {
     id: 'adhd',
     path: '/tests/adhd',
-    title: 'ADHD 自评测试',
-    description: '成人 ADHD 自评量表（ASRS-v1.1）根据 DSM-5 标准开发，共 18 题。',
+    title: t('tests.adhd.title'),
+    description: t('tests.adhd.description'),
     icon: 'bi bi-lightning-charge',
     badge: 'ASRS',
     gradient: 'linear-gradient(135deg, rgba(255,209,102,0.15) 0%, rgba(255,229,122,0.08) 100%)',
@@ -241,8 +243,8 @@ const tests = ref([
   {
     id: 'asd',
     path: '/tests/asd',
-    title: '自闭症谱系初筛',
-    description: '自闭症谱系商数（AQ-10）简短筛查工具，评估自闭症谱系特征，共 10 题。',
+    title: t('tests.asd.title'),
+    description: t('tests.asd.description'),
     icon: 'bi bi-puzzle',
     badge: 'AQ-10',
     gradient: 'linear-gradient(135deg, rgba(76,201,240,0.15) 0%, rgba(96,221,255,0.08) 100%)',
@@ -253,8 +255,8 @@ const tests = ref([
   {
     id: 'bpd',
     path: '/tests/bpd',
-    title: '边缘型人格障碍测试',
-    description: '边缘症状量表（MSI-BPD）筛查边缘型人格障碍风险，共 10 题。',
+    title: t('tests.bpd.title'),
+    description: t('tests.bpd.description'),
     icon: 'bi bi-heartbreak',
     badge: 'MSI-BPD',
     gradient: 'linear-gradient(135deg, rgba(123,44,191,0.15) 0%, rgba(143,64,211,0.08) 100%)',
@@ -265,8 +267,8 @@ const tests = ref([
   {
     id: 'somatic',
     path: '/tests/somatic',
-    title: '躯体症状障碍测试',
-    description: '躯体症状量表（PHQ-15）评估常见躯体症状严重程度，共 15 题。',
+    title: t('tests.somatic.title'),
+    description: t('tests.somatic.description'),
     icon: 'bi bi-thermometer',
     badge: 'PHQ-15',
     gradient: 'linear-gradient(135deg, rgba(188,108,37,0.15) 0%, rgba(208,128,57,0.08) 100%)',

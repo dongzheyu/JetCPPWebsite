@@ -1,17 +1,17 @@
-﻿<template>
+<template>
   <div class="ptsd-page">
     <section class="test-hero">
       <div class="container-fluid px-4">
         <div class="row align-items-center">
           <div class="col-lg-8" style="padding-left: 5%;">
             <RouterLink to="/tests" class="back-link mb-4 d-inline-flex align-items-center gap-2">
-              <i class="bi bi-arrow-left"></i> 返回评估列表
+              <i class="bi bi-arrow-left"></i> {{ t('tests.backToList') }}
             </RouterLink>
-            <h1 class="test-hero-title mb-3">创伤后应激障碍（PTSD）自评测试</h1>
-            <p class="test-hero-sub mb-2">PTSD 检查表（PCL-5） · 20 道题 · 约 6 分钟</p>
+            <h1 class="test-hero-title mb-3">{{ t('tests.ptsd.title') }}</h1>
+            <p class="test-hero-sub mb-2">{{ t('tests.ptsd.subtitle') }}</p>
             <p class="test-hero-desc">
-              PTSD 检查表（Posttraumatic Stress Disorder Checklist for DSM-5）是根据 DSM-5 标准开发的自评工具，用于评估创伤后应激障碍症状。
-              请根据过去一个月的情况回答。
+              {{ t('tests.ptsd.description') }}
+              {{ t('tests.ptsd.instruction') }}
             </p>
           </div>
         </div>
@@ -20,7 +20,7 @@
 
     <div class="container-fluid px-4 test-body">
       <div v-if="!showResult">
-        <p class="freq-instruction mb-5" style="padding-left: 5%;">以下问题涉及你在经历创伤事件后可能出现的反应。请根据过去一个月的情况，评估每种问题对你的困扰程度：</p>
+        <p class="freq-instruction mb-5" style="padding-left: 5%;">{{ t('tests.ptsd.questionInstruction') }}</p>
         <div
           v-for="(q, index) in questions"
           :key="q.id"
@@ -43,8 +43,8 @@
           </div>
         </div>
         <div class="submit-section mt-4">
-          <p v-if="answeredCount < questions.length" class="submit-hint">还有 {{ questions.length - answeredCount }} 道题未作答</p>
-          <button class="btn btn-primary btn-animate btn-lg" :disabled="answeredCount < questions.length" @click="calculateResult">查看结果</button>
+          <p v-if="answeredCount < questions.length" class="submit-hint">{{ t('tests.remainingQuestions', { count: questions.length - answeredCount }) }}</p>
+          <button class="btn btn-primary btn-animate btn-lg" :disabled="answeredCount < questions.length" @click="calculateResult">{{ t('tests.viewResult') }}</button>
         </div>
       </div>
 
@@ -61,7 +61,7 @@
         </div>
 
         <div class="answer-review mb-5">
-          <h3 class="review-title">各项得分详情</h3>
+          <h3 class="review-title">{{ t('tests.scoreDetails') }}</h3>
           <div class="review-grid">
             <div v-for="(q, index) in questions" :key="q.id" class="review-item">
               <div class="review-q-num">Q{{ index + 1 }}</div>
@@ -75,52 +75,52 @@
         </div>
 
         <div class="dimension-section mb-5">
-          <h3 class="review-title">DSM-5 症状群分析</h3>
+          <h3 class="review-title">{{ t('tests.ptsd.symptomClusterAnalysis') }}</h3>
           <div class="dimension-grid">
             <div class="dim-card">
               <div class="dim-icon"><i class="bi bi-eye-fill"></i></div>
               <div class="dim-content">
-                <h4 class="dim-title">再体验症状</h4>
+                <h4 class="dim-title">{{ t('tests.ptsd.reexperiencingSymptoms') }}</h4>
                 <p class="dim-score">{{ clusterB }} / 20</p>
-                <p class="dim-desc">侵入性回忆、噩梦、闪回</p>
+                <p class="dim-desc">{{ t('tests.ptsd.reexperiencingDesc') }}</p>
               </div>
             </div>
             <div class="dim-card">
               <div class="dim-icon"><i class="bi bi-slash-circle-fill"></i></div>
               <div class="dim-content">
-                <h4 class="dim-title">回避症状</h4>
+                <h4 class="dim-title">{{ t('tests.ptsd.avoidanceSymptoms') }}</h4>
                 <p class="dim-score">{{ clusterC }} / 8</p>
-                <p class="dim-desc">回避创伤相关刺激</p>
+                <p class="dim-desc">{{ t('tests.ptsd.avoidanceDesc') }}</p>
               </div>
             </div>
             <div class="dim-card">
               <div class="dim-icon"><i class="bi bi-lightning-fill"></i></div>
               <div class="dim-content">
-                <h4 class="dim-title">负性认知情绪</h4>
+                <h4 class="dim-title">{{ t('tests.ptsd.negativeCognition') }}</h4>
                 <p class="dim-score">{{ clusterD }} / 28</p>
-                <p class="dim-desc">认知扭曲、负性情绪</p>
+                <p class="dim-desc">{{ t('tests.ptsd.negativeCognitionDesc') }}</p>
               </div>
             </div>
             <div class="dim-card">
               <div class="dim-icon"><i class="bi bi-activity"></i></div>
               <div class="dim-content">
-                <h4 class="dim-title">过度警觉</h4>
+                <h4 class="dim-title">{{ t('tests.ptsd.hyperarousal') }}</h4>
                 <p class="dim-score">{{ clusterE }} / 24</p>
-                <p class="dim-desc">易怒、惊跳反应、失眠</p>
+                <p class="dim-desc">{{ t('tests.ptsd.hyperarousalDesc') }}</p>
               </div>
             </div>
           </div>
         </div>
 
         <div class="impairment-section mb-5">
-          <h3 class="review-title">详细分析</h3>
+          <h3 class="review-title">{{ t('tests.ptsd.detailAnalysis') }}</h3>
           <div class="detail-grid">
             <div class="detail-block">
-              <h4 class="detail-block-title">测试说明</h4>
+              <h4 class="detail-block-title">{{ t('tests.ptsd.testExplanation') }}</h4>
               <p class="detail-block-text">{{ result.analysis }}</p>
             </div>
             <div class="detail-block">
-              <h4 class="detail-block-title">建议行动</h4>
+              <h4 class="detail-block-title">{{ t('tests.ptsd.suggestedActions') }}</h4>
               <ul class="detail-list">
                 <li v-for="s in result.suggestions" :key="s">{{ s }}</li>
               </ul>
@@ -131,14 +131,14 @@
         <div class="important-notice mb-5">
           <i class="bi bi-exclamation-triangle notice-icon"></i>
           <div>
-            <strong>重要说明</strong>
-            <p>PCL-5 是筛查工具，不能替代临床诊断。PTSD 是一种可能影响任何人（无论创伤事件类型）的精神障碍，通过适当的治疗（如眼动脱敏与再处理疗法、认知加工疗法）通常能够显著改善。如果你经历过创伤事件并持续感到困扰，请寻求专业帮助。</p>
+            <strong>{{ t('tests.ptsd.importantNotice') }}</strong>
+            <p>{{ t('tests.ptsd.noticeText') }}</p>
           </div>
         </div>
 
         <div class="text-center" style="text-align: left !important;">
-          <button class="btn btn-animate me-3" @click="resetTest">重新测试</button>
-          <RouterLink to="/tests" class="btn btn-primary btn-animate">查看其他测试</RouterLink>
+          <button class="btn btn-animate me-3" @click="resetTest">{{ t('tests.resetTest') }}</button>
+          <RouterLink to="/tests" class="btn btn-primary btn-animate">{{ t('tests.viewOtherTests') }}</RouterLink>
         </div>
       </div>
     </div>
@@ -148,6 +148,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const freqOptions = [
   { value: 0, label: '一点也没有' },
@@ -158,26 +161,26 @@ const freqOptions = [
 ]
 
 const questions = ref([
-  { id: 1, text: '反复出现、不自主、令人痛苦的创伤记忆', cluster: 'B' },
-  { id: 2, text: '反复做与创伤事件相关的不愉快的梦', cluster: 'B' },
-  { id: 3, text: '出现闪回或感觉创伤事件正在重现', cluster: 'B' },
-  { id: 4, text: '接触到创伤提醒时感到强烈的心理痛苦', cluster: 'B' },
-  { id: 5, text: '接触到创伤提醒时出现强烈的生理反应', cluster: 'B' },
-  { id: 6, text: '回避与创伤事件相关的记忆或想法', cluster: 'C' },
-  { id: 7, text: '回避与创伤事件相关的外部提醒', cluster: 'C' },
-  { id: 8, text: '无法回忆起创伤事件的重要细节', cluster: 'D' },
-  { id: 9, text: '对自己、他人或世界持持续的消极信念', cluster: 'D' },
-  { id: 10, text: '因为自己或他人的原因责备自己或他人', cluster: 'D' },
-  { id: 11, text: '持续存在负性情绪状态（如恐惧、愤怒）', cluster: 'D' },
-  { id: 12, text: '对重要活动失去兴趣或参与减少', cluster: 'D' },
-  { id: 13, text: '感到与其他人疏远或脱离', cluster: 'D' },
-  { id: 14, text: '持续无法体验到积极情绪', cluster: 'D' },
-  { id: 15, text: '易怒的行为或易发怒', cluster: 'E' },
-  { id: 16, text: '鲁莽或自我毁灭的行为', cluster: 'E' },
-  { id: 17, text: '过度警觉', cluster: 'E' },
-  { id: 18, text: '惊跳反应过度', cluster: 'E' },
-  { id: 19, text: '注意力难以集中', cluster: 'E' },
-  { id: 20, text: '睡眠障碍', cluster: 'E' },
+  { id: 1, text: t('tests.ptsd.questions.0'), cluster: 'B' },
+  { id: 2, text: t('tests.ptsd.questions.1'), cluster: 'B' },
+  { id: 3, text: t('tests.ptsd.questions.2'), cluster: 'B' },
+  { id: 4, text: t('tests.ptsd.questions.3'), cluster: 'B' },
+  { id: 5, text: t('tests.ptsd.questions.4'), cluster: 'B' },
+  { id: 6, text: t('tests.ptsd.questions.5'), cluster: 'C' },
+  { id: 7, text: t('tests.ptsd.questions.6'), cluster: 'C' },
+  { id: 8, text: t('tests.ptsd.questions.7'), cluster: 'D' },
+  { id: 9, text: t('tests.ptsd.questions.8'), cluster: 'D' },
+  { id: 10, text: t('tests.ptsd.questions.9'), cluster: 'D' },
+  { id: 11, text: t('tests.ptsd.questions.10'), cluster: 'D' },
+  { id: 12, text: t('tests.ptsd.questions.11'), cluster: 'D' },
+  { id: 13, text: t('tests.ptsd.questions.12'), cluster: 'D' },
+  { id: 14, text: t('tests.ptsd.questions.13'), cluster: 'D' },
+  { id: 15, text: t('tests.ptsd.questions.14'), cluster: 'E' },
+  { id: 16, text: t('tests.ptsd.questions.15'), cluster: 'E' },
+  { id: 17, text: t('tests.ptsd.questions.16'), cluster: 'E' },
+  { id: 18, text: t('tests.ptsd.questions.17'), cluster: 'E' },
+  { id: 19, text: t('tests.ptsd.questions.18'), cluster: 'E' },
+  { id: 20, text: t('tests.ptsd.questions.19'), cluster: 'E' },
 ])
 
 const answers = ref<Record<number, number>>({})

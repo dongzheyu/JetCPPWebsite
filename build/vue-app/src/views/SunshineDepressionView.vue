@@ -6,14 +6,12 @@
         <div class="row align-items-center">
           <div class="col-lg-8" style="padding-left: 5%;">
             <RouterLink to="/tests" class="back-link mb-4 d-inline-flex align-items-center gap-2">
-              <i class="bi bi-arrow-left"></i> 返回评估列表
+              <i class="bi bi-arrow-left"></i> {{ t('tests.backToList') }}
             </RouterLink>
-            <h1 class="test-hero-title mb-3">阳光抑郁症测试</h1>
-            <p class="test-hero-sub mb-2">微笑型抑郁筛查 · 15 道题 · 约 8 分钟</p>
+            <h1 class="test-hero-title mb-3">{{ t('tests.sunshine.title') }}</h1>
+            <p class="test-hero-sub mb-2">{{ t('tests.sunshine.subtitle') }}</p>
             <p class="test-hero-desc">
-              "阳光抑郁症"（Smiling Depression）又称微笑型抑郁，指一种表面上看起来开朗、积极、功能正常，
-              内心却承受着持续痛苦、空洞感和无意义感的心理状态。
-              这种状态因为外表与内心的落差，常常被自己和他人忽视。
+              {{ t('tests.sunshine.description') }}
             </p>
           </div>
         </div>
@@ -25,7 +23,7 @@
       <!-- 测试题目 -->
       <div v-if="!showResult">
         <p class="instruction mb-5" style="padding-left: 5%;">
-          请根据你的真实感受作答，选择最能描述你状态的选项。
+          {{ t('tests.sunshine.instruction') }}
         </p>
 
         <div
@@ -52,14 +50,14 @@
 
         <div class="submit-section mt-4">
           <p v-if="answeredCount < questions.length" class="submit-hint">
-            还有 {{ questions.length - answeredCount }} 道题未作答
+            {{ t('tests.remainingQuestions', { count: questions.length - answeredCount }) }}
           </p>
           <button
             class="btn btn-primary btn-animate btn-lg"
             :disabled="answeredCount < questions.length"
             @click="calculateResult"
           >
-            查看结果
+            {{ t('tests.viewResult') }}
           </button>
         </div>
       </div>
@@ -87,7 +85,7 @@
 
         <!-- 维度分析 -->
         <div class="dimension-analysis mb-5">
-          <h3 class="section-title">核心特征分析</h3>
+          <h3 class="section-title">{{ t('tests.sunshine.coreFeatures') }}</h3>
           <div class="dimension-grid">
             <div v-for="dim in dimensionResults" :key="dim.name" class="dim-card">
               <div class="dim-header">
@@ -108,11 +106,11 @@
         <div class="detail-section mb-5">
           <div class="detail-grid">
             <div class="detail-block">
-              <h4 class="detail-block-title">什么是阳光抑郁</h4>
+              <h4 class="detail-block-title">{{ t('tests.sunshine.whatIsSunshineDepression') }}</h4>
               <p class="detail-block-text">{{ result.analysis }}</p>
             </div>
             <div class="detail-block">
-              <h4 class="detail-block-title">你可以做什么</h4>
+              <h4 class="detail-block-title">{{ t('tests.sunshine.whatYouCanDo') }}</h4>
               <ul class="detail-list">
                 <li v-for="s in result.suggestions" :key="s">{{ s }}</li>
               </ul>
@@ -122,7 +120,7 @@
 
         <!-- 心理援助资源 -->
         <div class="resources-section mb-5">
-          <h3 class="section-title">心理援助热线</h3>
+          <h3 class="section-title">{{ t('tests.sunshine.mentalHealthHotlines') }}</h3>
           <div class="hotline-list">
             <div v-for="h in hotlines" :key="h.name" class="hotline-item">
               <span class="hotline-name">{{ h.name }}</span>
@@ -135,14 +133,14 @@
         <div class="notice-box mb-5">
           <i class="bi bi-info-circle notice-icon"></i>
           <div>
-            <strong>测试说明</strong>
-            <p>本测试基于阳光抑郁症的研究特征设计，不是临床诊断工具。得分偏高并不意味着你患有抑郁症，但值得认真对待自己的内心感受。如果你长期感到内外不一致的痛苦，建议寻求专业心理咨询。</p>
+            <strong>{{ t('tests.sunshine.testInstructions') }}</strong>
+            <p>{{ t('tests.sunshine.noticeText') }}</p>
           </div>
         </div>
 
         <div class="text-center">
-          <button class="btn btn-animate me-3" @click="resetTest">重新测试</button>
-          <RouterLink to="/tests" class="btn btn-primary btn-animate">查看其他测试</RouterLink>
+          <button class="btn btn-animate me-3" @click="resetTest">{{ t('tests.resetTest') }}</button>
+          <RouterLink to="/tests" class="btn btn-primary btn-animate">{{ t('tests.viewOtherTests') }}</RouterLink>
         </div>
       </div>
     </div>
@@ -152,36 +150,39 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const agreeOptions = [
-  { value: 0, label: '完全不符合' },
-  { value: 1, label: '偶尔符合' },
-  { value: 2, label: '有时符合' },
-  { value: 3, label: '经常符合' },
-  { value: 4, label: '完全符合' },
+  { value: 0, label: t('tests.agreeOptions.stronglyDisagree') },
+  { value: 1, label: t('tests.agreeOptions.slightlyDisagree') },
+  { value: 2, label: t('tests.agreeOptions.neutral') },
+  { value: 3, label: t('tests.agreeOptions.slightlyAgree') },
+  { value: 4, label: t('tests.agreeOptions.stronglyAgree') },
 ]
 
 // 分四个维度：面具维度(Q1-5)、内心痛苦(Q6-10)、功能维持(Q11-13)、意义感(Q14-15)
 const questions = ref([
   // 面具维度
-  { id: 1,  dim: 'mask',  text: '我会在他人面前展现出开朗、快乐的一面，即使内心并不是这样' },
-  { id: 2,  dim: 'mask',  text: '朋友或家人认为我是个积极乐观的人，但我自己并不这么觉得' },
-  { id: 3,  dim: 'mask',  text: '当别人问我过得怎么样时，我习惯性地回答"挺好的"' },
-  { id: 4,  dim: 'mask',  text: '我担心如果表现出真实的情绪，会让身边的人担心或失望' },
-  { id: 5,  dim: 'mask',  text: '我觉得自己在"表演"一种比真实状态更好的状态' },
+  { id: 1,  dim: 'mask',  text: t('tests.sunshine.questions.q1') },
+  { id: 2,  dim: 'mask',  text: t('tests.sunshine.questions.q2') },
+  { id: 3,  dim: 'mask',  text: t('tests.sunshine.questions.q3') },
+  { id: 4,  dim: 'mask',  text: t('tests.sunshine.questions.q4') },
+  { id: 5,  dim: 'mask',  text: t('tests.sunshine.questions.q5') },
   // 内心痛苦
-  { id: 6,  dim: 'pain',  text: '在表面平静甚至欢笑的背后，我感到一种难以言说的空洞感' },
-  { id: 7,  dim: 'pain',  text: '我常常在独处时感到莫名的悲伤或情绪低落' },
-  { id: 8,  dim: 'pain',  text: '我有时会感到内心很疲惫，尽管外表看起来没什么问题' },
-  { id: 9,  dim: 'pain',  text: '我觉得没有人真正理解我内心的感受' },
-  { id: 10, dim: 'pain',  text: '有时候我会在笑完之后突然感到一阵莫名的悲伤' },
+  { id: 6,  dim: 'pain',  text: t('tests.sunshine.questions.q6') },
+  { id: 7,  dim: 'pain',  text: t('tests.sunshine.questions.q7') },
+  { id: 8,  dim: 'pain',  text: t('tests.sunshine.questions.q8') },
+  { id: 9,  dim: 'pain',  text: t('tests.sunshine.questions.q9') },
+  { id: 10, dim: 'pain',  text: t('tests.sunshine.questions.q10') },
   // 功能维持
-  { id: 11, dim: 'func',  text: '即便内心状态不好，我依然能维持正常的工作、学习和社交功能' },
-  { id: 12, dim: 'func',  text: '我的日常生活表面上看起来和常人无异，甚至比很多人更"能干"' },
-  { id: 13, dim: 'func',  text: '别人很难看出我其实在内心挣扎' },
+  { id: 11, dim: 'func',  text: t('tests.sunshine.questions.q11') },
+  { id: 12, dim: 'func',  text: t('tests.sunshine.questions.q12') },
+  { id: 13, dim: 'func',  text: t('tests.sunshine.questions.q13') },
   // 意义感
-  { id: 14, dim: 'meaning', text: '我有时会感到自己所做的一切都失去了意义，即使我依然在做' },
-  { id: 15, dim: 'meaning', text: '我对未来缺乏期待，但我不会让别人发现这一点' },
+  { id: 14, dim: 'meaning', text: t('tests.sunshine.questions.q14') },
+  { id: 15, dim: 'meaning', text: t('tests.sunshine.questions.q15') },
 ])
 
 const answers = ref<Record<number, number>>({})
@@ -198,10 +199,10 @@ const totalScore = computed(() =>
 
 const dimensionResults = computed(() => {
   const dims = [
-    { name: '外在面具感', key: 'mask', max: 20, desc: '在他人面前隐藏真实情绪、维持积极形象的程度' },
-    { name: '内心痛苦感', key: 'pain', max: 20, desc: '内心隐性痛苦、空洞感和情绪低落的程度' },
-    { name: '功能维持度', key: 'func', max: 12, desc: '在内心困扰下仍维持正常日常功能的能力' },
-    { name: '意义感缺失', key: 'meaning', max: 8, desc: '对生活失去意义感却不向外表露的程度' },
+    { name: t('tests.sunshine.dimensions.mask.name'), key: 'mask', max: 20, desc: t('tests.sunshine.dimensions.mask.desc') },
+    { name: t('tests.sunshine.dimensions.pain.name'), key: 'pain', max: 20, desc: t('tests.sunshine.dimensions.pain.desc') },
+    { name: t('tests.sunshine.dimensions.func.name'), key: 'func', max: 12, desc: t('tests.sunshine.dimensions.func.desc') },
+    { name: t('tests.sunshine.dimensions.meaning.name'), key: 'meaning', max: 8, desc: t('tests.sunshine.dimensions.meaning.desc') },
   ]
   return dims.map(d => {
     const qs = questions.value.filter(q => q.dim === d.key)

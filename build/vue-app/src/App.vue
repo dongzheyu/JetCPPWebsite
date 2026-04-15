@@ -2,8 +2,11 @@
 import { RouterLink, RouterView } from 'vue-router'
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import LanguageSwitcher from './components/LanguageSwitcher.vue'
 
 const route = useRoute()
+const { t } = useI18n()
 
 const isTestsRoute = computed(() => route.path.startsWith('/tests'))
 const isEmergencyRoute = computed(() => route.path === '/emergency')
@@ -117,30 +120,33 @@ onUnmounted(() => {
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
-              <RouterLink to="/" class="nav-link">首页</RouterLink>
+              <RouterLink to="/" class="nav-link">{{ t('nav.home') }}</RouterLink>
             </li>
             <li class="nav-item">
-              <RouterLink to="/projects" class="nav-link">项目</RouterLink>
+              <RouterLink to="/projects" class="nav-link">{{ t('nav.projects') }}</RouterLink>
             </li>
             <li class="nav-item">
-              <RouterLink to="/blog" class="nav-link">博客</RouterLink>
+              <RouterLink to="/blog" class="nav-link">{{ t('nav.blog') }}</RouterLink>
             </li>
             <li class="nav-item">
-              <RouterLink to="/about" class="nav-link">关于我</RouterLink>
+              <RouterLink to="/about" class="nav-link">{{ t('nav.about') }}</RouterLink>
             </li>
             <li class="nav-item">
               <RouterLink to="/tests" class="nav-link" :class="{ 'active': isTestsRoute }">
-                心理评估
+                {{ t('nav.psychology') }}
               </RouterLink>
             </li>
             <li class="nav-item">
               <RouterLink to="/emergency" class="nav-link" :class="{ 'active': isEmergencyRoute }">
-                紧急求助
+                {{ t('nav.emergency') }}
               </RouterLink>
             </li>
           </ul>
 
           <div class="d-flex align-items-center gap-2">
+            <!-- 语言切换 -->
+            <LanguageSwitcher />
+
             <!-- 减少动画按钮 -->
             <button
               class="motion-toggle-btn"
@@ -160,17 +166,17 @@ onUnmounted(() => {
               <ul class="dropdown-menu dropdown-menu-end theme-dropdown">
                 <li>
                   <button class="dropdown-item d-flex align-items-center gap-2" :class="{ active: currentTheme === 'light' }" @click="setTheme('light')">
-                    <i class="bi bi-sun-fill"></i> 浅色
+                    <i class="bi bi-sun-fill"></i> {{ t('theme.light') }}
                   </button>
                 </li>
                 <li>
                   <button class="dropdown-item d-flex align-items-center gap-2" :class="{ active: currentTheme === 'dark' }" @click="setTheme('dark')">
-                    <i class="bi bi-moon-stars-fill"></i> 深色
+                    <i class="bi bi-moon-stars-fill"></i> {{ t('theme.dark') }}
                   </button>
                 </li>
                 <li>
                   <button class="dropdown-item d-flex align-items-center gap-2" :class="{ active: currentTheme === 'system' }" @click="setTheme('system')">
-                    <i class="bi bi-circle-half"></i> 跟随系统
+                    <i class="bi bi-circle-half"></i> {{ t('theme.system') }}
                   </button>
                 </li>
               </ul>
@@ -179,7 +185,7 @@ onUnmounted(() => {
             <!-- 关注我 -->
             <div class="dropdown">
               <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                关注我
+                {{ t('footer.followMe') }}
               </button>
               <ul class="dropdown-menu dropdown-menu-end">
                 <li><a class="dropdown-item" href="https://github.com/dongzheyu" target="_blank">
@@ -196,7 +202,7 @@ onUnmounted(() => {
 
             <!-- 赞助 -->
             <a href="https://afdian.com/a/JetCPP" target="_blank" class="btn btn-warning ms-1">
-              <i class="bi bi-heart me-1"></i> 赞助
+              <i class="bi bi-heart me-1"></i> {{ t('footer.sponsor') }}
             </a>
           </div>
         </div>
@@ -212,7 +218,7 @@ onUnmounted(() => {
         <div class="row align-items-center">
           <div class="col-md-6">
             <h5>dongle</h5>
-            <p class="text-muted mb-0">代码重塑世界 · 创新驱动未来</p>
+            <p class="text-muted mb-0">{{ t('footer.tagline') }}</p>
           </div>
           <div class="col-md-6 text-md-end mt-3 mt-md-0">
             <div class="mb-3">

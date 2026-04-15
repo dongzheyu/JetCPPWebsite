@@ -1,42 +1,45 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useScrollAnimation } from '@/composables/useAnimations'
+import { useI18n } from 'vue-i18n'
 
-const features = ref([
+const { t } = useI18n()
+
+const features = computed(() => [
   {
     icon: 'bi bi-controller',
-    title: 'Minecraft 工具开发',
-    description: '专注于我的世界相关工具开发，包括启动器管理、整合包优化、基岩版操作等，让游戏体验更流畅。',
+    title: t('home.features.minecraft.title'),
+    description: t('home.features.minecraft.description'),
     color: '#ff8c42'
   },
   {
     icon: 'bi bi-wrench-adjustable-circle',
-    title: '实用系统工具',
-    description: '开发各类实用的系统工具，如编译器安装器、环境配置工具等，帮助开发者和玩家简化操作。',
+    title: t('home.features.tools.title'),
+    description: t('home.features.tools.description'),
     color: '#52b788'
   },
   {
     icon: 'bi bi-journal-richtext',
-    title: '技术博客分享',
-    description: '定期更新技术文章，分享C++编程经验、项目开发心得和实用工具使用技巧。',
+    title: t('home.features.blog.title'),
+    description: t('home.features.blog.description'),
     color: '#f48c06'
   },
   {
     icon: 'bi bi-globe2',
-    title: '网站与文档',
-    description: '创建个人网站和项目文档，分享技术成果，帮助更多人学习和使用开源项目。',
+    title: t('home.features.website.title'),
+    description: t('home.features.website.description'),
     color: '#e85d04'
   },
   {
     icon: 'bi bi-mortarboard-fill',
-    title: '教育编程',
-    description: '开发教育类编程工具和练习程序，帮助初学者更好地学习编程和英语等技能。',
+    title: t('home.features.education.title'),
+    description: t('home.features.education.description'),
     color: '#ffba08'
   },
   {
     icon: 'bi bi-rocket-takeoff-fill',
-    title: '持续学习',
-    description: '不断学习新技术，从用户需求出发，开发更实用、更高效的工具和应用。',
+    title: t('home.features.learning.title'),
+    description: t('home.features.learning.description'),
     color: '#ef233c'
   }
 ])
@@ -71,27 +74,27 @@ onMounted(() => {
           </div>
 
           <h1 class="hero-title mb-4 animate-slide-up" :class="{ 'visible': isVisible }">
-            你好，我是<br>
-            <span class="text-gradient">dongle</span>
+            {{ t('home.hero.greeting') }}<br>
+            <span class="text-gradient">{{ t('home.hero.name') }}</span>
           </h1>
 
           <p class="hero-subtitle mb-4 animate-slide-up" :class="{ 'visible': isVisible }" style="animation-delay: 0.15s">
-            代码重塑世界 · 创新驱动未来
+            {{ t('home.hero.tagline') }}
           </p>
 
           <p class="hero-desc mb-5 animate-slide-up" :class="{ 'visible': isVisible }" style="animation-delay: 0.3s">
-            一个热爱编程的小学生，专注于创造实用的软件工具，让技术更贴近生活。
+            {{ t('home.hero.description') }}
           </p>
 
           <div class="hero-buttons animate-slide-up" :class="{ 'visible': isVisible }" style="animation-delay: 0.45s">
             <router-link to="/about" class="btn btn-light btn-lg me-3">
-              <i class="bi bi-person me-2"></i>关于我
+              <i class="bi bi-person me-2"></i>{{ t('home.hero.aboutBtn') }}
             </router-link>
             <router-link to="/projects" class="btn btn-outline-light btn-lg me-3">
-              <i class="bi bi-folder2-open me-2"></i>项目
+              <i class="bi bi-folder2-open me-2"></i>{{ t('home.hero.projectsBtn') }}
             </router-link>
             <router-link to="/blog" class="btn btn-outline-light btn-lg">
-              <i class="bi bi-journal-text me-2"></i>博客
+              <i class="bi bi-journal-text me-2"></i>{{ t('home.hero.blogBtn') }}
             </router-link>
           </div>
         </div>
@@ -125,9 +128,9 @@ onMounted(() => {
     <div class="container-fluid">
       <!-- 标题左偏，符合"反主流" -->
       <div class="section-header animate-on-scroll">
-        <h2 class="section-title">我的专长</h2>
+        <h2 class="section-title">{{ t('home.features.minecraft.title') }}</h2>
         <p class="section-desc">
-          专注于技术创新，创造实用工具，让技术更贴近生活
+          {{ t('home.features.tools.description') }}
         </p>
       </div>
 
@@ -158,16 +161,16 @@ onMounted(() => {
       <div class="cta-content">
         <div class="cta-text">
           <h2 class="fw-bold mb-3 cta-title animate-on-scroll">
-            准备好探索编程的<br>无限可能了吗？
+            {{ t('home.hero.greeting') }}<br>{{ t('home.hero.description') }}
           </h2>
           <p class="lead text-white-50 animate-on-scroll" style="animation-delay: 0.1s">
-            欢迎访问我的项目，一起感受代码创造的乐趣
+            {{ t('home.features.learning.description') }}
           </p>
         </div>
         <div class="cta-action">
           <a href="https://github.com/dongzheyu" target="_blank"
              class="btn btn-light btn-lg animate-on-scroll" style="animation-delay: 0.2s">
-            <i class="bi bi-github me-2"></i>访问 GitHub
+            <i class="bi bi-github me-2"></i>GitHub
           </a>
         </div>
       </div>

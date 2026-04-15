@@ -1,17 +1,16 @@
-﻿<template>
+<template>
   <div class="adhd-page">
     <section class="test-hero">
       <div class="container-fluid px-4">
         <div class="row align-items-center">
           <div class="col-lg-8">
             <RouterLink to="/tests" class="back-link mb-4 d-inline-flex align-items-center gap-2">
-              <i class="bi bi-arrow-left"></i> 返回评估列表
+              <i class="bi bi-arrow-left"></i> {{ t('tests.backToList') }}
             </RouterLink>
-            <h1 class="test-hero-title mb-3">注意力缺陷多动障碍（ADHD）自评测试</h1>
-            <p class="test-hero-sub mb-2">成人 ADHD 自评量表（ASRS-v1.1） · 18 道题 · 约 5 分钟</p>
+            <h1 class="test-hero-title mb-3">{{ t('tests.adhd.title') }}</h1>
+            <p class="test-hero-sub mb-2">{{ t('tests.adhd.subtitle') }}</p>
             <p class="test-hero-desc">
-              成人 ADHD 自评量表（Adult ADHD Self-Report Scale v1.1）是根据 DSM-5 标准开发的自评工具，用于筛查成人 ADHD 症状。
-              请根据过去六个月的情况回答。
+              {{ t('tests.adhd.description') }}
             </p>
           </div>
         </div>
@@ -20,7 +19,7 @@
 
     <div class="container-fluid px-4 test-body">
       <div v-if="!showResult">
-        <p class="freq-instruction mb-5">请评估以下情况在过去六个月中发生的频率：</p>
+        <p class="freq-instruction mb-5">{{ t('tests.adhd.frequencyInstruction') }}</p>
         <div
           v-for="(q, index) in questions"
           :key="q.id"
@@ -43,8 +42,8 @@
           </div>
         </div>
         <div class="submit-section mt-4">
-          <p v-if="answeredCount < questions.length" class="submit-hint">还有 {{ questions.length - answeredCount }} 道题未作答</p>
-          <button class="btn btn-primary btn-animate btn-lg" :disabled="answeredCount < questions.length" @click="calculateResult">查看结果</button>
+          <p v-if="answeredCount < questions.length" class="submit-hint">{{ t('tests.remainingQuestions', { count: questions.length - answeredCount }) }}</p>
+          <button class="btn btn-primary btn-animate btn-lg" :disabled="answeredCount < questions.length" @click="calculateResult">{{ t('tests.viewResult') }}</button>
         </div>
       </div>
 
@@ -61,36 +60,36 @@
         </div>
 
         <div class="dimension-section mb-5">
-          <h3 class="review-title">症状维度分析</h3>
+          <h3 class="review-title">{{ t('tests.adhd.symptomAnalysis') }}</h3>
           <div class="dimension-grid">
             <div class="dim-card">
               <div class="dim-icon"><i class="bi bi-lightbulb-fill"></i></div>
               <div class="dim-content">
-                <h4 class="dim-title">注意缺陷</h4>
+                <h4 class="dim-title">{{ t('tests.adhd.inattention') }}</h4>
                 <p class="dim-score">{{ inattentionScore }} / 36</p>
-                <p class="dim-desc">注意力不集中、容易分心、健忘</p>
+                <p class="dim-desc">{{ t('tests.adhd.inattentionDesc') }}</p>
               </div>
             </div>
             <div class="dim-card">
               <div class="dim-icon"><i class="bi bi-lightning-fill"></i></div>
               <div class="dim-content">
-                <h4 class="dim-title">多动冲动</h4>
+                <h4 class="dim-title">{{ t('tests.adhd.hyperactivity') }}</h4>
                 <p class="dim-score">{{ hyperactivityScore }} / 36</p>
-                <p class="dim-desc">坐立不安、难以等待、打断他人</p>
+                <p class="dim-desc">{{ t('tests.adhd.hyperactivityDesc') }}</p>
               </div>
             </div>
           </div>
         </div>
 
         <div class="impairment-section mb-5">
-          <h3 class="review-title">详细分析</h3>
+          <h3 class="review-title">{{ t('tests.adhd.detailAnalysis') }}</h3>
           <div class="detail-grid">
             <div class="detail-block">
-              <h4 class="detail-block-title">测试说明</h4>
+              <h4 class="detail-block-title">{{ t('tests.adhd.testExplanation') }}</h4>
               <p class="detail-block-text">{{ result.analysis }}</p>
             </div>
             <div class="detail-block">
-              <h4 class="detail-block-title">建议行动</h4>
+              <h4 class="detail-block-title">{{ t('tests.adhd.suggestedActions') }}</h4>
               <ul class="detail-list">
                 <li v-for="s in result.suggestions" :key="s">{{ s }}</li>
               </ul>
@@ -101,14 +100,14 @@
         <div class="important-notice mb-5">
           <i class="bi bi-exclamation-triangle notice-icon"></i>
           <div>
-            <strong>重要说明</strong>
-            <p>ASRS 是筛查工具，不能替代专业诊断。ADHD 是一种神经发育障碍，通过药物治疗、行为治疗和技能训练通常能够显著改善功能。如果你怀疑自己可能有 ADHD，建议寻求专业的神经精神科评估。</p>
+            <strong>{{ t('tests.adhd.importantNotice') }}</strong>
+            <p>{{ t('tests.adhd.noticeText') }}</p>
           </div>
         </div>
 
         <div class="text-center text-left">
-          <button class="btn btn-animate me-3" @click="resetTest">重新测试</button>
-          <RouterLink to="/tests" class="btn btn-primary btn-animate">查看其他测试</RouterLink>
+          <button class="btn btn-animate me-3" @click="resetTest">{{ t('tests.resetTest') }}</button>
+          <RouterLink to="/tests" class="btn btn-primary btn-animate">{{ t('tests.viewOtherTests') }}</RouterLink>
         </div>
       </div>
     </div>
@@ -118,6 +117,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const freqOptions = [
   { value: 0, label: '从不' },

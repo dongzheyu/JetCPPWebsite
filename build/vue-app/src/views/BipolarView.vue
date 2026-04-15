@@ -1,17 +1,17 @@
-﻿<template>
+<template>
   <div class="bipolar-page">
     <section class="test-hero">
       <div class="container-fluid px-4">
         <div class="row align-items-center">
           <div class="col-lg-8" style="padding-left: 5%;">
             <RouterLink to="/tests" class="back-link mb-4 d-inline-flex align-items-center gap-2">
-              <i class="bi bi-arrow-left"></i> 返回评估列表
+              <i class="bi bi-arrow-left"></i> {{ t('tests.backToList') }}
             </RouterLink>
-            <h1 class="test-hero-title mb-3">双相情感障碍自评测试</h1>
-            <p class="test-hero-sub mb-2">心境障碍问卷（MDQ） · 13 道题 · 约 5 分钟</p>
+            <h1 class="test-hero-title mb-3">{{ t('tests.bipolar.title') }}</h1>
+            <p class="test-hero-sub mb-2">{{ t('tests.bipolar.subtitle') }}</p>
             <p class="test-hero-desc">
-              心境障碍问卷（Mood Disorder Questionnaire）是由 Hirschfeld 等人于 2000 年开发的筛查工具，用于识别可能与双相情感障碍相关的症状。
-              请回想一生中曾经出现过的情况，不限于近期。
+              {{ t('tests.bipolar.description') }}
+              {{ t('tests.bipolar.instruction') }}
             </p>
           </div>
         </div>
@@ -20,7 +20,7 @@
 
     <div class="container-fluid px-4 test-body">
       <div v-if="!showResult">
-        <p class="freq-instruction mb-5" style="padding-left: 5%;">以下清单描述了人们在情绪特别高昂、亢奋或激动时可能出现的情况。请回想你一生中是否有过类似体验（持续至少几天）：</p>
+        <p class="freq-instruction mb-5" style="padding-left: 5%;">{{ t('tests.bipolar.questionInstruction') }}</p>
         <div
           v-for="(q, index) in questions"
           :key="q.id"
@@ -43,8 +43,8 @@
           </div>
         </div>
         <div class="submit-section mt-4">
-          <p v-if="answeredCount < questions.length" class="submit-hint">还有 {{ questions.length - answeredCount }} 道题未作答</p>
-          <button class="btn btn-primary btn-animate btn-lg" :disabled="answeredCount < questions.length" @click="calculateResult">查看结果</button>
+          <p v-if="answeredCount < questions.length" class="submit-hint">{{ t('tests.remainingQuestions', { count: questions.length - answeredCount }) }}</p>
+          <button class="btn btn-primary btn-animate btn-lg" :disabled="answeredCount < questions.length" @click="calculateResult">{{ t('tests.viewResult') }}</button>
         </div>
       </div>
 
@@ -61,7 +61,7 @@
         </div>
 
         <div class="answer-review mb-5">
-          <h3 class="review-title">各项得分详情</h3>
+          <h3 class="review-title">{{ t('tests.scoreDetails') }}</h3>
           <div class="review-grid">
             <div v-for="(q, index) in questions" :key="q.id" class="review-item">
               <div class="review-q-num">Q{{ index + 1 }}</div>
@@ -75,14 +75,14 @@
         </div>
 
         <div class="impairment-section mb-5">
-          <h3 class="review-title">详细分析</h3>
+          <h3 class="review-title">{{ t('tests.bipolar.detailAnalysis') }}</h3>
           <div class="detail-grid">
             <div class="detail-block">
-              <h4 class="detail-block-title">测试说明</h4>
+              <h4 class="detail-block-title">{{ t('tests.bipolar.testExplanation') }}</h4>
               <p class="detail-block-text">{{ result.analysis }}</p>
             </div>
             <div class="detail-block">
-              <h4 class="detail-block-title">建议行动</h4>
+              <h4 class="detail-block-title">{{ t('tests.bipolar.suggestedActions') }}</h4>
               <ul class="detail-list">
                 <li v-for="s in result.suggestions" :key="s">{{ s }}</li>
               </ul>
@@ -93,14 +93,14 @@
         <div class="important-notice mb-5">
           <i class="bi bi-exclamation-triangle notice-icon"></i>
           <div>
-            <strong>重要说明</strong>
-            <p>MDQ 是筛查工具，不是诊断工具。双相情感障碍的诊断需要精神科医生通过详细的临床访谈和观察才能确定。如果你对这些症状感到担忧，请务必寻求专业评估。</p>
+            <strong>{{ t('tests.bipolar.importantNotice') }}</strong>
+            <p>{{ t('tests.bipolar.noticeText') }}</p>
           </div>
         </div>
 
         <div class="text-center" style="text-align: left !important;">
-          <button class="btn btn-animate me-3" @click="resetTest">重新测试</button>
-          <RouterLink to="/tests" class="btn btn-primary btn-animate">查看其他测试</RouterLink>
+          <button class="btn btn-animate me-3" @click="resetTest">{{ t('tests.resetTest') }}</button>
+          <RouterLink to="/tests" class="btn btn-primary btn-animate">{{ t('tests.viewOtherTests') }}</RouterLink>
         </div>
       </div>
     </div>
@@ -110,6 +110,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const freqOptions = [
   { value: 0, label: '没有' },

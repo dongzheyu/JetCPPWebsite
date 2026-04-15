@@ -6,10 +6,10 @@
         <div class="row align-items-center">
           <div class="col-lg-8" style="padding-left: 5%;">
             <h1 class="blog-title mb-4 animate-slide-up" :class="{ 'visible': isVisible }">
-              我的技术博客
+              {{ t('blog.title') }}
             </h1>
             <p class="blog-subtitle mb-4 animate-slide-up" :class="{ 'visible': isVisible }" style="animation-delay: 0.2s">
-              记录编程历程，分享开发心得，探索技术世界
+              {{ t('blog.description') }}
             </p>
           </div>
           <div class="col-lg-4">
@@ -48,7 +48,7 @@
                   </div>
                   <a :href="post.link" class="btn btn-sm btn-animate" target="_blank"
                      style="border: 1.5px solid var(--color-border); color: var(--color-text);">
-                    阅读全文 <i class="bi bi-arrow-right ms-1"></i>
+                    {{ t('blog.readMore') }} <i class="bi bi-arrow-right ms-1"></i>
                   </a>
                 </div>
               </div>
@@ -61,59 +61,44 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useAnimations } from '@/composables/useAnimations'
+import { useI18n } from 'vue-i18n'
+
+const { t, locale } = useI18n()
+const { isVisible } = useAnimations()
 
 // 博客文章数据
-const blogPosts = ref([
+const blogPosts = computed(() => [
   {
     id: 1,
-    title: 'C++完全入门指南：从Hello World到结构体',
-    excerpt: '这是一篇详细的C++入门指南，从最基础的Hello World程序开始，逐步讲解变量、数据类型、控制流、函数、指针到结构体等核心概念，适合初学者系统学习C++编程。',
+    title: t('blog.posts.cppGuide.title'),
+    excerpt: t('blog.posts.cppGuide.excerpt'),
     date: '2026-12-24',
     author: 'JetCPP Team',
-    link: '/blog/cpp-guide.html',
+    link: locale.value === 'en-US' ? '/blog/en/cpp-guide.html' : '/blog/cpp-guide.html',
     color: '#FF6B6B',
-    category: '编程教程'
+    category: t('blog.categories.programming')
   },
   {
     id: 2,
-    title: 'C# 从入门到精通（零基础到进阶）',
-    excerpt: '一份全面的C#学习指南，涵盖从基础语法到高级特性的完整知识体系。包括变量、数据类型、控制流、方法、数组、面向对象编程、泛型、委托事件、LINQ查询和异步编程等核心内容，附带完整的学生管理系统实战项目。',
+    title: t('blog.posts.csharpGuide.title'),
+    excerpt: t('blog.posts.csharpGuide.excerpt'),
     date: '2026-03-04',
     author: 'JetCPP Team',
-    link: '/blog/csharp-guide.html',
+    link: locale.value === 'en-US' ? '/blog/en/csharp-guide.html' : '/blog/csharp-guide.html',
     color: '#dc2f02',
-    category: '编程教程'
+    category: t('blog.categories.programming')
   },
   {
     id: 3,
-    title: 'XAML 从入门到精通（零基础到进阶）',
-    excerpt: 'WPF界面开发完全指南，从XAML基础语法到MVVM架构模式。涵盖布局系统、常用控件、资源管理、数据绑定、样式模板、动画系统和自定义控件等内容，最后通过一个完整的待办事项应用项目展示实战技巧。',
+    title: t('blog.posts.xamlGuide.title'),
+    excerpt: t('blog.posts.xamlGuide.excerpt'),
     date: '2026-03-04',
     author: 'JetCPP Team',
-    link: '/blog/xaml-guide.html',
+    link: locale.value === 'en-US' ? '/blog/en/xaml-guide.html' : '/blog/xaml-guide.html',
     color: '#52b788',
-    category: '编程教程'
+    category: t('blog.categories.programming')
   }
 ])
-
-// 动画效果
-const { isVisible } = useAnimations()
 </script>
-
-<style scoped>
-.blog-title {
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  font-weight: 800;
-  color: var(--color-heading);
-  letter-spacing: -0.02em;
-}
-
-.blog-subtitle {
-  font-size: 1.1rem;
-  color: var(--color-text-secondary);
-  max-width: 520px;
-  line-height: 1.7;
-}
-</style>

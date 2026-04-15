@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="eating-page">
     <!-- Hero -->
     <section class="test-hero eating-hero">
@@ -6,13 +6,13 @@
         <div class="row align-items-center">
           <div class="col-lg-8" style="padding-left: 5%;">
             <RouterLink to="/tests" class="back-link mb-4 d-inline-flex align-items-center gap-2">
-              <i class="bi bi-arrow-left"></i> 返回评估列表
+              <i class="bi bi-arrow-left"></i> {{ t('tests.backToList') }}
             </RouterLink>
-            <h1 class="test-hero-title mb-3">进食障碍自评测试</h1>
-            <p class="test-hero-sub mb-2">EAT-26 进食态度测试 · 26 道题 · 约 6 分钟</p>
+            <h1 class="test-hero-title mb-3">{{ t('tests.eating.title') }}</h1>
+            <p class="test-hero-sub mb-2">{{ t('tests.eating.subtitle') }}</p>
             <p class="test-hero-desc">
-              EAT-26（Eating Attitudes Test-26）是筛查厌食症、贪食症等进食障碍风险的自评工具，
-              广泛应用于临床和研究领域。请根据过去三个月内你的真实情况作答。
+              {{ t('tests.eating.description') }}
+              {{ t('tests.eating.instruction') }}
             </p>
           </div>
         </div>
@@ -52,26 +52,26 @@
           <!-- 提交按钮 -->
           <div class="submit-section">
             <button type="submit" class="btn btn-animate submit-btn" :disabled="!allAnswered">
-              {{ allAnswered ? '查看评估结果' : `请完成所有题目 (${answeredCount}/${questions.length})` }}
+              {{ allAnswered ? t('tests.viewResult') : t('tests.completeAllQuestions', { answered: answeredCount, total: questions.length }) }}
             </button>
           </div>
         </form>
 
         <!-- 结果部分 -->
         <div v-if="showResult" class="result-section">
-          <h2 class="result-title">评估结果</h2>
+          <h2 class="result-title">{{ t('tests.eating.resultTitle') }}</h2>
           <div class="result-card">
             <div class="score-display">
-              <span class="score-label">您的总分</span>
+              <span class="score-label">{{ t('tests.eating.totalScore') }}</span>
               <div class="score-value">{{ totalScore }}</div>
-              <div class="score-range">筛查临界值 20 分</div>
+              <div class="score-range">{{ t('tests.eating.cutoffScore') }}</div>
             </div>
             <div class="result-interpretation">
-              <h3>结果解读</h3>
+              <h3>{{ t('tests.eating.resultInterpretation') }}</h3>
               <p v-html="resultInterpretation"></p>
             </div>
             <div class="result-actions">
-              <button @click="resetTest" class="btn btn-secondary">重新评估</button>
+              <button @click="resetTest" class="btn btn-secondary">{{ t('tests.resetTest') }}</button>
             </div>
           </div>
         </div>
@@ -82,6 +82,10 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 // 进食障碍 EAT-26 题目
 const questions = ref([
@@ -146,9 +150,9 @@ const resultInterpretation = computed(() => {
   const score = totalScore.value
   
   if (score < 20) {
-    return '<strong>进食态度正常范围</strong><br>您的分数表明您的进食态度和饮食行为在正常范围内，没有明显的进食障碍风险。'
+    return `<strong>${t('tests.eating.normalRange')}</strong><br>${t('tests.eating.normalRangeDesc')}`
   } else {
-    return '<strong>进食障碍风险较高</strong><br>您的分数达到或超过了筛查临界值（20分），提示可能存在进食障碍风险。建议寻求专业饮食障碍评估。'
+    return `<strong>${t('tests.eating.highRisk')}</strong><br>${t('tests.eating.highRiskDesc')}`
   }
 })
 

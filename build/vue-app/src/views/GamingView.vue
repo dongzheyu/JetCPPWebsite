@@ -1,17 +1,17 @@
-﻿<template>
+<template>
   <div class="gaming-page">
     <section class="test-hero">
       <div class="container-fluid px-4">
         <div class="row align-items-center">
           <div class="col-lg-8" style="padding-left: 5%;">
             <RouterLink to="/tests" class="back-link mb-4 d-inline-flex align-items-center gap-2">
-              <i class="bi bi-arrow-left"></i> 返回评估列表
+              <i class="bi bi-arrow-left"></i> {{ t('tests.backToList') }}
             </RouterLink>
-            <h1 class="test-hero-title mb-3">游戏障碍自评测试</h1>
-            <p class="test-hero-sub mb-2">网络游戏障碍测试（IGD-20） · 20 道题 · 约 6 分钟</p>
+            <h1 class="test-hero-title mb-3">{{ t('tests.gaming.title') }}</h1>
+            <p class="test-hero-sub mb-2">{{ t('tests.gaming.subtitle') }}</p>
             <p class="test-hero-desc">
-              网络游戏障碍测试（Internet Gaming Disorder Test-20）是根据 DSM-5 研究标准开发的自评工具，用于评估游戏成瘾风险。
-              请根据过去一年的情况回答。
+              {{ t('tests.gaming.description') }}
+              {{ t('tests.gaming.instruction') }}
             </p>
           </div>
         </div>
@@ -20,7 +20,7 @@
 
     <div class="container-fluid px-4 test-body">
       <div v-if="!showResult">
-        <p class="freq-instruction mb-5" style="padding-left: 5%;">请评估以下陈述与你的实际情况的符合程度：</p>
+        <p class="freq-instruction mb-5" style="padding-left: 5%;">{{ t('tests.gaming.questionInstruction') }}</p>
         <div
           v-for="(q, index) in questions"
           :key="q.id"
@@ -43,8 +43,8 @@
           </div>
         </div>
         <div class="submit-section mt-4">
-          <p v-if="answeredCount < questions.length" class="submit-hint">还有 {{ questions.length - answeredCount }} 道题未作答</p>
-          <button class="btn btn-primary btn-animate btn-lg" :disabled="answeredCount < questions.length" @click="calculateResult">查看结果</button>
+          <p v-if="answeredCount < questions.length" class="submit-hint">{{ t('tests.remainingQuestions', { count: questions.length - answeredCount }) }}</p>
+          <button class="btn btn-primary btn-animate btn-lg" :disabled="answeredCount < questions.length" @click="calculateResult">{{ t('tests.viewResult') }}</button>
         </div>
       </div>
 
@@ -61,14 +61,14 @@
         </div>
 
         <div class="impairment-section mb-5">
-          <h3 class="review-title">详细分析</h3>
+          <h3 class="review-title">{{ t('tests.gaming.detailAnalysis') }}</h3>
           <div class="detail-grid">
             <div class="detail-block">
-              <h4 class="detail-block-title">测试说明</h4>
+              <h4 class="detail-block-title">{{ t('tests.gaming.testExplanation') }}</h4>
               <p class="detail-block-text">{{ result.analysis }}</p>
             </div>
             <div class="detail-block">
-              <h4 class="detail-block-title">建议行动</h4>
+              <h4 class="detail-block-title">{{ t('tests.gaming.suggestedActions') }}</h4>
               <ul class="detail-list">
                 <li v-for="s in result.suggestions" :key="s">{{ s }}</li>
               </ul>
@@ -79,14 +79,14 @@
         <div class="important-notice mb-5">
           <i class="bi bi-exclamation-triangle notice-icon"></i>
           <div>
-            <strong>重要说明</strong>
-            <p>IGD-20 是筛查工具，不能替代专业诊断。游戏障碍是一种行为成瘾，通过认知行为疗法、家庭治疗和时间管理技巧通常能够显著改善。如果你感觉游戏已经控制了你的生活，寻求帮助是正确的选择。</p>
+            <strong>{{ t('tests.gaming.importantNotice') }}</strong>
+            <p>{{ t('tests.gaming.noticeText') }}</p>
           </div>
         </div>
 
         <div class="text-center" style="text-align: left !important;">
-          <button class="btn btn-animate me-3" @click="resetTest">重新测试</button>
-          <RouterLink to="/tests" class="btn btn-primary btn-animate">查看其他测试</RouterLink>
+          <button class="btn btn-animate me-3" @click="resetTest">{{ t('tests.resetTest') }}</button>
+          <RouterLink to="/tests" class="btn btn-primary btn-animate">{{ t('tests.viewOtherTests') }}</RouterLink>
         </div>
       </div>
     </div>
@@ -96,6 +96,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const freqOptions = [
   { value: 0, label: '完全不符合' },
@@ -106,26 +109,26 @@ const freqOptions = [
 ]
 
 const questions = ref([
-  { id: 1, text: '我花越来越多时间玩游戏' },
-  { id: 2, text: '当不玩游戏时，我会想游戏的事' },
-  { id: 3, text: '我需要玩更长时间才能获得同样的满足感' },
-  { id: 4, text: '我尝试减少游戏时间但失败了' },
-  { id: 5, text: '不玩游戏时我感到烦躁、焦虑或易怒' },
-  { id: 6, text: '我玩游戏是为了逃避现实问题或负面情绪' },
-  { id: 7, text: '我对自己玩游戏的时间撒谎' },
-  { id: 8, text: '我因为玩游戏而失去重要机会' },
-  { id: 9, text: '我因为玩游戏而与家人或朋友发生冲突' },
-  { id: 10, text: '我因为玩游戏而忽视其他责任' },
-  { id: 11, text: '游戏已经影响了我的学业或工作表现' },
-  { id: 12, text: '我即使知道游戏有负面影响也无法停止' },
-  { id: 13, text: '我需要不断升级装备或角色' },
-  { id: 14, text: '我因为玩游戏而睡眠不足' },
-  { id: 15, text: '我因为玩游戏而忽视个人卫生' },
-  { id: 16, text: '我因为玩游戏而饮食不规律' },
-  { id: 17, text: '我为了玩游戏而减少其他活动' },
-  { id: 18, text: '我花费超出预算的钱在游戏上' },
-  { id: 19, text: '我感觉游戏控制了我的生活' },
-  { id: 20, text: '我即使意识到问题也无法减少游戏时间' },
+  { id: 1, text: t('tests.gaming.questions.0') },
+  { id: 2, text: t('tests.gaming.questions.1') },
+  { id: 3, text: t('tests.gaming.questions.2') },
+  { id: 4, text: t('tests.gaming.questions.3') },
+  { id: 5, text: t('tests.gaming.questions.4') },
+  { id: 6, text: t('tests.gaming.questions.5') },
+  { id: 7, text: t('tests.gaming.questions.6') },
+  { id: 8, text: t('tests.gaming.questions.7') },
+  { id: 9, text: t('tests.gaming.questions.8') },
+  { id: 10, text: t('tests.gaming.questions.9') },
+  { id: 11, text: t('tests.gaming.questions.10') },
+  { id: 12, text: t('tests.gaming.questions.11') },
+  { id: 13, text: t('tests.gaming.questions.12') },
+  { id: 14, text: t('tests.gaming.questions.13') },
+  { id: 15, text: t('tests.gaming.questions.14') },
+  { id: 16, text: t('tests.gaming.questions.15') },
+  { id: 17, text: t('tests.gaming.questions.16') },
+  { id: 18, text: t('tests.gaming.questions.17') },
+  { id: 19, text: t('tests.gaming.questions.18') },
+  { id: 20, text: t('tests.gaming.questions.19') },
 ])
 
 const answers = ref<Record<number, number>>({})

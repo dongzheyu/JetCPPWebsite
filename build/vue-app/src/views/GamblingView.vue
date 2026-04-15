@@ -1,17 +1,17 @@
-﻿<template>
+<template>
   <div class="gambling-page">
     <section class="test-hero">
       <div class="container-fluid px-4">
         <div class="row align-items-center">
           <div class="col-lg-8" style="padding-left: 5%;">
             <RouterLink to="/tests" class="back-link mb-4 d-inline-flex align-items-center gap-2">
-              <i class="bi bi-arrow-left"></i> 返回评估列表
+              <i class="bi bi-arrow-left"></i> {{ t('tests.backToList') }}
             </RouterLink>
-            <h1 class="test-hero-title mb-3">赌博障碍自评测试</h1>
-            <p class="test-hero-sub mb-2">赌博问题严重性指数（PGSI） · 9 道题 · 约 3 分钟</p>
+            <h1 class="test-hero-title mb-3">{{ t('tests.gambling.title') }}</h1>
+            <p class="test-hero-sub mb-2">{{ t('tests.gambling.subtitle') }}</p>
             <p class="test-hero-desc">
-              赌博问题严重性指数（Problem Gambling Severity Index）是评估赌博问题严重程度的标准化工具。
-              请根据过去一年的情况回答。
+              {{ t('tests.gambling.description') }}
+              {{ t('tests.gambling.instruction') }}
             </p>
           </div>
         </div>
@@ -20,7 +20,7 @@
 
     <div class="container-fluid px-4 test-body">
       <div v-if="!showResult">
-        <p class="freq-instruction mb-5" style="padding-left: 5%;">在过去一年中，以下情况发生的频率如何？</p>
+        <p class="freq-instruction mb-5" style="padding-left: 5%;">{{ t('tests.gambling.questionInstruction') }}</p>
         <div
           v-for="(q, index) in questions"
           :key="q.id"
@@ -43,8 +43,8 @@
           </div>
         </div>
         <div class="submit-section mt-4">
-          <p v-if="answeredCount < questions.length" class="submit-hint">还有 {{ questions.length - answeredCount }} 道题未作答</p>
-          <button class="btn btn-primary btn-animate btn-lg" :disabled="answeredCount < questions.length" @click="calculateResult">查看结果</button>
+          <p v-if="answeredCount < questions.length" class="submit-hint">{{ t('tests.remainingQuestions', { count: questions.length - answeredCount }) }}</p>
+          <button class="btn btn-primary btn-animate btn-lg" :disabled="answeredCount < questions.length" @click="calculateResult">{{ t('tests.viewResult') }}</button>
         </div>
       </div>
 
@@ -61,14 +61,14 @@
         </div>
 
         <div class="impairment-section mb-5">
-          <h3 class="review-title">详细分析</h3>
+          <h3 class="review-title">{{ t('tests.gambling.detailAnalysis') }}</h3>
           <div class="detail-grid">
             <div class="detail-block">
-              <h4 class="detail-block-title">测试说明</h4>
+              <h4 class="detail-block-title">{{ t('tests.gambling.testExplanation') }}</h4>
               <p class="detail-block-text">{{ result.analysis }}</p>
             </div>
             <div class="detail-block">
-              <h4 class="detail-block-title">建议行动</h4>
+              <h4 class="detail-block-title">{{ t('tests.gambling.suggestedActions') }}</h4>
               <ul class="detail-list">
                 <li v-for="s in result.suggestions" :key="s">{{ s }}</li>
               </ul>
@@ -79,14 +79,14 @@
         <div class="important-notice mb-5">
           <i class="bi bi-exclamation-triangle notice-icon"></i>
           <div>
-            <strong>重要说明</strong>
-            <p>PGSI 是筛查工具，不能替代专业诊断。赌博障碍是一种可治疗的精神障碍，通过认知行为疗法和支持团体通常能够显著改善。如果你或你认识的人正在与赌博问题作斗争，寻求帮助是康复的第一步。</p>
+            <strong>{{ t('tests.gambling.importantNotice') }}</strong>
+            <p>{{ t('tests.gambling.noticeText') }}</p>
           </div>
         </div>
 
         <div class="text-center" style="text-align: left !important;">
-          <button class="btn btn-animate me-3" @click="resetTest">重新测试</button>
-          <RouterLink to="/tests" class="btn btn-primary btn-animate">查看其他测试</RouterLink>
+          <button class="btn btn-animate me-3" @click="resetTest">{{ t('tests.resetTest') }}</button>
+          <RouterLink to="/tests" class="btn btn-primary btn-animate">{{ t('tests.viewOtherTests') }}</RouterLink>
         </div>
       </div>
     </div>
@@ -96,6 +96,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const freqOptions = [
   { value: 0, label: '从不' },
@@ -105,15 +108,15 @@ const freqOptions = [
 ]
 
 const questions = ref([
-  { id: 1, text: '你赌博的钱是否超过你原本计划的金额？' },
-  { id: 2, text: '你是否需要赌博更多钱才能获得同样的刺激感？' },
-  { id: 3, text: '当你试图减少或停止赌博时，是否感到烦躁或不安？' },
-  { id: 4, text: '赌博是否导致你出现健康问题，包括压力或焦虑？' },
-  { id: 5, text: '是否有人批评你的赌博行为，或者告诉你你有赌博问题？' },
-  { id: 6, text: '赌博是否导致你的财务状况出现问题？' },
-  { id: 7, text: '你是否因赌博而感到内疚？' },
-  { id: 8, text: '赌博是否导致你失去学习或工作机会？' },
-  { id: 9, text: '你是否依赖他人帮你解决赌博造成的财务问题？' },
+  { id: 1, text: t('tests.gambling.questions.0') },
+  { id: 2, text: t('tests.gambling.questions.1') },
+  { id: 3, text: t('tests.gambling.questions.2') },
+  { id: 4, text: t('tests.gambling.questions.3') },
+  { id: 5, text: t('tests.gambling.questions.4') },
+  { id: 6, text: t('tests.gambling.questions.5') },
+  { id: 7, text: t('tests.gambling.questions.6') },
+  { id: 8, text: t('tests.gambling.questions.7') },
+  { id: 9, text: t('tests.gambling.questions.8') },
 ])
 
 const answers = ref<Record<number, number>>({})

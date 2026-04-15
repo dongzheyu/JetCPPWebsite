@@ -1,17 +1,17 @@
-﻿<template>
+<template>
   <div class="somatic-page">
     <section class="test-hero">
       <div class="container-fluid px-4">
         <div class="row align-items-center">
           <div class="col-lg-8" style="padding-left: 5%;">
             <RouterLink to="/tests" class="back-link mb-4 d-inline-flex align-items-center gap-2">
-              <i class="bi bi-arrow-left"></i> 返回评估列表
+              <i class="bi bi-arrow-left"></i> {{ t('tests.backToList') }}
             </RouterLink>
-            <h1 class="test-hero-title mb-3">躯体症状障碍自评测试</h1>
-            <p class="test-hero-sub mb-2">躯体症状量表（PHQ-15） · 15 道题 · 约 4 分钟</p>
+            <h1 class="test-hero-title mb-3">{{ t('tests.somatic.title') }}</h1>
+            <p class="test-hero-sub mb-2">{{ t('tests.somatic.subtitle') }}</p>
             <p class="test-hero-desc">
-              躯体症状量表（Patient Health Questionnaire-15）是评估常见躯体症状严重程度的自评工具，用于筛查躯体症状障碍和医学无法解释的症状。
-              请根据过去四周的情况回答。
+              {{ t('tests.somatic.description') }}
+              {{ t('tests.somatic.instruction') }}
             </p>
           </div>
         </div>
@@ -20,7 +20,7 @@
 
     <div class="container-fluid px-4 test-body">
       <div v-if="!showResult">
-        <p class="freq-instruction mb-5" style="padding-left: 5%;">在过去四周内，以下身体症状对你造成了多大困扰？</p>
+        <p class="freq-instruction mb-5" style="padding-left: 5%;">{{ t('tests.somatic.questionInstruction') }}</p>
         <div
           v-for="(q, index) in questions"
           :key="q.id"
@@ -43,8 +43,8 @@
           </div>
         </div>
         <div class="submit-section mt-4">
-          <p v-if="answeredCount < questions.length" class="submit-hint">还有 {{ questions.length - answeredCount }} 道题未作答</p>
-          <button class="btn btn-primary btn-animate btn-lg" :disabled="answeredCount < questions.length" @click="calculateResult">查看结果</button>
+          <p v-if="answeredCount < questions.length" class="submit-hint">{{ t('tests.remainingQuestions', { count: questions.length - answeredCount }) }}</p>
+          <button class="btn btn-primary btn-animate btn-lg" :disabled="answeredCount < questions.length" @click="calculateResult">{{ t('tests.viewResult') }}</button>
         </div>
       </div>
 
@@ -61,7 +61,7 @@
         </div>
 
         <div class="answer-review mb-5">
-          <h3 class="review-title">各项症状详情</h3>
+          <h3 class="review-title">{{ t('tests.somatic.symptomDetails') }}</h3>
           <div class="review-grid">
             <div v-for="(q, index) in questions" :key="q.id" class="review-item">
               <div class="review-q-num">Q{{ index + 1 }}</div>
@@ -75,14 +75,14 @@
         </div>
 
         <div class="impairment-section mb-5">
-          <h3 class="review-title">详细分析</h3>
+          <h3 class="review-title">{{ t('tests.somatic.detailAnalysis') }}</h3>
           <div class="detail-grid">
             <div class="detail-block">
-              <h4 class="detail-block-title">测试说明</h4>
+              <h4 class="detail-block-title">{{ t('tests.somatic.testExplanation') }}</h4>
               <p class="detail-block-text">{{ result.analysis }}</p>
             </div>
             <div class="detail-block">
-              <h4 class="detail-block-title">建议行动</h4>
+              <h4 class="detail-block-title">{{ t('tests.somatic.suggestedActions') }}</h4>
               <ul class="detail-list">
                 <li v-for="s in result.suggestions" :key="s">{{ s }}</li>
               </ul>
@@ -93,15 +93,15 @@
         <div class="important-notice mb-5">
           <i class="bi bi-exclamation-triangle notice-icon"></i>
           <div>
-            <strong>重要医疗声明</strong>
-            <p>PHQ-15 是筛查工具，不能替代医学检查。躯体症状可能由身体疾病、心理因素或两者共同引起。在考虑心理因素之前，必须排除潜在的医学疾病。如果你有持续的身体症状，请务必先咨询医生进行全面的医学评估。</p>
-            <p>躯体症状障碍是一种真实的精神障碍，患者体验到的身体症状是真实的痛苦，不是"想象出来的"。通过认知行为疗法、正念和压力管理，通常能够显著改善症状。</p>
+            <strong>{{ t('tests.somatic.importantMedicalNotice') }}</strong>
+            <p>{{ t('tests.somatic.medicalNotice1') }}</p>
+            <p>{{ t('tests.somatic.medicalNotice2') }}</p>
           </div>
         </div>
 
         <div class="text-center" style="text-align: left !important;">
-          <button class="btn btn-animate me-3" @click="resetTest">重新测试</button>
-          <RouterLink to="/tests" class="btn btn-primary btn-animate">查看其他测试</RouterLink>
+          <button class="btn btn-animate me-3" @click="resetTest">{{ t('tests.resetTest') }}</button>
+          <RouterLink to="/tests" class="btn btn-primary btn-animate">{{ t('tests.viewOtherTests') }}</RouterLink>
         </div>
       </div>
     </div>
@@ -111,6 +111,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const freqOptions = [
   { value: 0, label: '一点也不' },

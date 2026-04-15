@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="ocd-page">
     <!-- Hero -->
     <section class="test-hero ocd-hero">
@@ -6,13 +6,13 @@
         <div class="row align-items-center">
           <div class="col-lg-8" style="padding-left: 5%;">
             <RouterLink to="/tests" class="back-link mb-4 d-inline-flex align-items-center gap-2">
-              <i class="bi bi-arrow-left"></i> 返回评估列表
+              <i class="bi bi-arrow-left"></i> {{ t('tests.backToList') }}
             </RouterLink>
-            <h1 class="test-hero-title mb-3">强迫症自评测试</h1>
-            <p class="test-hero-sub mb-2">OCI-R 强迫症状量表 · 18 道题 · 约 5 分钟</p>
+            <h1 class="test-hero-title mb-3">{{ t('tests.ocd.title') }}</h1>
+            <p class="test-hero-sub mb-2">{{ t('tests.ocd.subtitle') }}</p>
             <p class="test-hero-desc">
-              OCI-R（Obsessive-Compulsive Inventory-Revised）是评估强迫思维和强迫行为的自评工具，
-              已被广泛用于研究和临床筛查。请根据过去一个月内你的真实感受作答。
+              {{ t('tests.ocd.description') }}
+              {{ t('tests.ocd.instruction') }}
             </p>
           </div>
         </div>
@@ -52,26 +52,26 @@
           <!-- 提交按钮 -->
           <div class="submit-section">
             <button type="submit" class="btn btn-animate submit-btn" :disabled="!allAnswered">
-              {{ allAnswered ? '查看评估结果' : `请完成所有题目 (${answeredCount}/${questions.length})` }}
+              {{ allAnswered ? t('tests.viewResult') : t('tests.completeAllQuestions', { answered: answeredCount, total: questions.length }) }}
             </button>
           </div>
         </form>
 
         <!-- 结果部分 -->
         <div v-if="showResult" class="result-section">
-          <h2 class="result-title">评估结果</h2>
+          <h2 class="result-title">{{ t('tests.resultTitle') }}</h2>
           <div class="result-card">
             <div class="score-display">
-              <span class="score-label">您的总分</span>
+              <span class="score-label">{{ t('tests.totalScore') }}</span>
               <div class="score-value">{{ totalScore }}</div>
-              <div class="score-range">满分 {{ maxScore }}</div>
+              <div class="score-range">{{ t('tests.maxScore', { score: maxScore }) }}</div>
             </div>
             <div class="result-interpretation">
-              <h3>结果解读</h3>
+              <h3>{{ t('tests.resultInterpretation') }}</h3>
               <p v-html="resultInterpretation"></p>
             </div>
             <div class="result-actions">
-              <button @click="resetTest" class="btn btn-secondary">重新评估</button>
+              <button @click="resetTest" class="btn btn-secondary">{{ t('tests.resetTest') }}</button>
             </div>
           </div>
         </div>
@@ -82,27 +82,31 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { RouterLink } from 'vue-router'
+
+const { t } = useI18n()
 
 // 强迫症 OCI-R 题目
 const questions = ref([
-  { text: '我会被不愉快的想法困扰，即使我不想这样', hint: '强迫思维' },
-  { text: '我会觉得必须反复检查事情，比如锁门或关煤气', hint: '检查行为' },
-  { text: '我会被害怕失去控制的念头困扰', hint: '失控恐惧' },
-  { text: '我会因为害怕细菌或污染而避免触摸某些物品', hint: '污染恐惧' },
-  { text: '我会保存很多用不上的东西', hint: '囤积行为' },
-  { text: '我会因为对称、顺序或精确性的需要而感到不安', hint: '对称需求' },
-  { text: '我会为了减少焦虑而必须做一些重复的动作', hint: '重复动作' },
-  { text: '我必须按特定的方式整理物品，否则会感到不安', hint: '整理仪式' },
-  { text: '我会因为脑海中出现不道德的念头而感到困扰', hint: '道德困扰' },
-  { text: '我需要反复确认自己没说错话或做错事', hint: '反复确认' },
-  { text: '我会被暴力的画面或想法困扰', hint: '暴力念头' },
-  { text: '我需要多次重复日常活动，比如进出房间', hint: '重复日常' },
-  { text: '我会因为担心自己可能伤害他人而感到不安', hint: '伤害恐惧' },
-  { text: '我会反复计数或重复特定的词语', hint: '计数仪式' },
-  { text: '我需要按照特定的顺序做事情', hint: '顺序需求' },
-  { text: '我会被与性相关的不愉快想法困扰', hint: '性念头' },
-  { text: '我会有清洗或清洁的冲动，即使不脏', hint: '清洗冲动' },
-  { text: '我会反复寻求他人的保证', hint: '寻求保证' }
+  { text: t('tests.ocd.questions.0'), hint: t('tests.ocd.hints.0') },
+  { text: t('tests.ocd.questions.1'), hint: t('tests.ocd.hints.1') },
+  { text: t('tests.ocd.questions.2'), hint: t('tests.ocd.hints.2') },
+  { text: t('tests.ocd.questions.3'), hint: t('tests.ocd.hints.3') },
+  { text: t('tests.ocd.questions.4'), hint: t('tests.ocd.hints.4') },
+  { text: t('tests.ocd.questions.5'), hint: t('tests.ocd.hints.5') },
+  { text: t('tests.ocd.questions.6'), hint: t('tests.ocd.hints.6') },
+  { text: t('tests.ocd.questions.7'), hint: t('tests.ocd.hints.7') },
+  { text: t('tests.ocd.questions.8'), hint: t('tests.ocd.hints.8') },
+  { text: t('tests.ocd.questions.9'), hint: t('tests.ocd.hints.9') },
+  { text: t('tests.ocd.questions.10'), hint: t('tests.ocd.hints.10') },
+  { text: t('tests.ocd.questions.11'), hint: t('tests.ocd.hints.11') },
+  { text: t('tests.ocd.questions.12'), hint: t('tests.ocd.hints.12') },
+  { text: t('tests.ocd.questions.13'), hint: t('tests.ocd.hints.13') },
+  { text: t('tests.ocd.questions.14'), hint: t('tests.ocd.hints.14') },
+  { text: t('tests.ocd.questions.15'), hint: t('tests.ocd.hints.15') },
+  { text: t('tests.ocd.questions.16'), hint: t('tests.ocd.hints.16') },
+  { text: t('tests.ocd.questions.17'), hint: t('tests.ocd.hints.17') }
 ])
 
 // 评分选项 (0-4分)
@@ -144,11 +148,11 @@ const resultInterpretation = computed(() => {
   const score = totalScore.value
   
   if (score < 21) {
-    return '<strong>轻度或无强迫症状</strong><br>您的分数表明您目前没有明显的强迫症状，或者症状非常轻微，对日常生活影响很小。'
+    return `<strong>${t('tests.ocd.mildSymptoms')}</strong><br>${t('tests.ocd.mildSymptomsDesc')}`
   } else if (score < 41) {
-    return '<strong>中度强迫症状</strong><br>您的分数表明您可能有一些强迫症状，建议关注这些症状是否影响到您的日常生活。'
+    return `<strong>${t('tests.ocd.moderateSymptoms')}</strong><br>${t('tests.ocd.moderateSymptomsDesc')}`
   } else {
-    return '<strong>明显强迫症状</strong><br>您的分数表明您可能有较明显的强迫症状，建议考虑寻求专业心理咨询师的评估和帮助。'
+    return `<strong>${t('tests.ocd.severeSymptoms')}</strong><br>${t('tests.ocd.severeSymptomsDesc')}`
   }
 })
 
