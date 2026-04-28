@@ -21,3 +21,10 @@ build\vue-app\.workbuddy
 
 #Other
 复制构建产物.bat
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
